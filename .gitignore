@@ -1,0 +1,43 @@
+# Ignore virtual environments
+.venv/
+venv/
+env/
+
+# Ignore environment configuration
+.env
+
+# Ignore Python bytecode
+*.pyc
+*.pyo
+
+# Ignore editor and system files
+*~
+.vscode/
+.idea/
+*.swp   # Vim swap files
+
+# Ignore log files and directories
+/logs/
+*.log
+
+# Ignore database files
+db.sqlite3
+
+# Ignore static assets directories
+/staticfiles/
+/static/CACHE/
+
+# Ignore media files
+/media/
+
+# Ignore node_modules directory (if using JavaScript tools)
+node_modules/
+
+# Ignore coverage reports
+.coverage
+
+# Ignore local development settings (if using local_settings.py)
+local_settings.py
+
+# Ignore macOS specific files
+.DS_Store
