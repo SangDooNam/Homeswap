@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from accounts.models import UserProfile
+from accounts.models import User
 
 class BlogPost(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -13,7 +13,6 @@ class BlogPost(models.Model):
     
 
     def save(self, *args, **kwargs):
-        user_profile = self.user.userprofile
-        self.from_city = user_profile.city
-        self.max_capacity = user_profile.max_capacity
+        self.from_city = self.user.city
+        self.max_capacity = self.user.max_capacity
         super().save(*args, **kwargs)
