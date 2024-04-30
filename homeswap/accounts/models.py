@@ -21,6 +21,7 @@ class User(AbstractUser):
     phone_number = PhoneNumberField(null=True, blank=True)
     biography = models.TextField(null=True, blank=True)
     addresse = models.TextField(max_length=100, null=True, blank=True)
+    postal_code = models.IntegerField(max_length=10, null=True, blank=True)
     birthday_date = models.DateField(null=True, blank=True)
     
     def __str__(self) -> str:
@@ -30,14 +31,8 @@ class User(AbstractUser):
 class HomePhoto(ValidateModel):
     
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='home_photos')
-    first_img = models.ImageField(upload_to='home_photos', null=True, blank=True)
-    second_img = models.ImageField(upload_to='home_photos', null=True, blank=True)
-    third_img = models.ImageField(upload_to='home_photos', null=True, blank=True)
-    fifth_img = models.ImageField(upload_to='home_photos', null=True, blank=True)
-    sixth_img = models.ImageField(upload_to='home_photos', null=True, blank=True)
-    seventh_img = models.ImageField(upload_to='home_photos', null=True, blank=True)
-    eighth_img = models.ImageField(upload_to='home_photos', null=True, blank=True)
-    nineth_img = models.ImageField(upload_to='home_photos', null=True, blank=True)
+    image = models.ImageField(upload_to='home_photos', null=True, blank=True)
+    photo_type = models.CharField(max_length=50, help_text="Type of the Photo, e.g., 'kitchen', 'living room'.")
     
     def __str__(self):
-        return self.user.username
+        return f"{self.user.username} - {self.photo_type}"

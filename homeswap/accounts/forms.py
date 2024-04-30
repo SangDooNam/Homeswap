@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
+from .models import HomePhoto
+
 
 def authenticate_user_or_email(user_or_email, password):
 
@@ -75,3 +77,8 @@ class ProfileForm(forms.ModelForm):
             'profile_photo',
         ]
         
+class HomePhotoForm(forms.ModelForm):
+    
+    class Meta:
+        model = HomePhoto
+        fields = ['image', 'photo_type']
