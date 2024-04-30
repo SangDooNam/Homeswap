@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %} Sign in {% endblock %}
+{% block content %}
+<br><br><br>
+    <form method="post">
+        {% csrf_token %}
+        <div class='form-middle'>
+            <table style="margin-left: auto; margin-right: auto;">
+                <tr>
+                    <td>{{ form.username.label }}</td>
+                    <td>{{ form.username }}</td>
+                    <td>{{ form.password.label }}</td>
+                    <td>{{ form.password }}</td>
+                    <td class="social-container">
+                        <button class="btn btn-primary mb-2">
+                            <a href="/accounts/login/">Login</a>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br><br>
+        <div class='form-middle'>
+            <input type='submit' value='Submit'>
+        </div>
+    </form>
+{% endblock %}

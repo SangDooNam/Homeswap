@@ -29,7 +29,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,12 +38,24 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts',
+    'django.contrib.sites',
+    
+    #local
+    'accounts.apps.AccountsConfig',
     'blog',
     'search',
     'messaging',
     'support',
+    
+    #phonenumber
     'phonenumber_field',
+    
+    #allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +66,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Add the account middleware:
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'homeswap.urls'
@@ -62,7 +75,7 @@ ROOT_URLCONF = 'homeswap.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR/'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -139,4 +152,76 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = 'accounts.AppUser'
+
+#social app custom settings
+
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 1
+
+# LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = '/'
+# LOGOUT_URL = 'logout'
+# LOGOUT_REDIRECT_URL = 'login'
+
+SOCIAL_AUTH_FACEBOOK_KEY = '374767008220323'
+SOCIAL_AUTH_FACEBOOK_SECRET = 'e403e2a92fb7aa96e13ed7f1eb536c33'
+
+SOCIAL_AUTH_FACEBOOK_REDIRECT_URI = 'https://9547-77-181-139-105.ngrok-free.app/social-auth/complete/facebook/'
+
+#for extra info
+SOCIAL_AUTH_FACEBOOK_SCOPE = [
+    'email', 'public_profile',
+]
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
+
+SOCIALACCOUNT_PROVIDERS = {
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate',
+                        'access_type': 'online'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'first_name',
+            'last_name',
+            'middle_name',
+            'name',
+            'name_format',
+            'picture',
+            'short_name'
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': lambda request: 'en_US',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v7.0',
+    },
+    'google' : {
+        'SCOPE' : [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            "access_type": "online"
+        }
+    }
+}

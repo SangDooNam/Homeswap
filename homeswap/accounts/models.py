@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Create your models here.
 
@@ -15,13 +16,15 @@ class ValidateModel(models.Model):
         abstract = True
 
 
-class User(AbstractUser):
+class AppUser(AbstractUser):
     
     profile_photo = models.ImageField(upload_to='profile_photo', default='profile_photo/default.jpg')
     phone_number = PhoneNumberField(null=True, blank=True)
     biography = models.TextField(null=True, blank=True)
     addresse = models.TextField(max_length=100, null=True, blank=True)
-    postal_code = models.IntegerField(max_length=10, null=True, blank=True)
+    location = models.TextField(max_length=50, null=True, blank=True)
+    max_capacity = models.SmallIntegerField(null=True, blank=True)
+    postal_code = models.IntegerField(validators=[MinValueValidator(100000), MaxValueValidator(999999)], null=True, blank=True)
     birthday_date = models.DateField(null=True, blank=True)
     
     def __str__(self) -> str:
@@ -30,7 +33,7 @@ class User(AbstractUser):
 
 class HomePhoto(ValidateModel):
     
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='home_photos')
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='home_photos')
     image = models.ImageField(upload_to='home_photos', null=True, blank=True)
     photo_type = models.CharField(max_length=50, help_text="Type of the Photo, e.g., 'kitchen', 'living room'.")
     

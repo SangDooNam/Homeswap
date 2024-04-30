@@ -27,4 +27,5 @@ urlpatterns = [
     path('search/', include('search.urls', namespace='search')),
     path('messaging/', include('messaging.urls', namespace='messaging')),
     path('support/', include('support.urls', namespace='support')),
+    path('accounts/', include('allauth.urls')),
 ] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)

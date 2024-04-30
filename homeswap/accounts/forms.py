@@ -1,12 +1,11 @@
-from typing import Any
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import User, HomePhoto
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
-from .models import HomePhoto
+from .models import HomePhoto, AppUser
+from typing import Any
 
 
 def authenticate_user_or_email(user_or_email, password):
@@ -47,7 +46,7 @@ class LoginForm(forms.Form):
 class RegistrationForm(UserCreationForm):
     
     class Meta:
-        model = User
+        model = AppUser
         fields = [
             'first_name',
             'last_name',
@@ -65,7 +64,7 @@ class RegistrationForm(UserCreationForm):
 class ProfileForm(forms.ModelForm):
     
     class Meta:
-        model = User
+        model = AppUser
         fields = [
             'username',
             'first_name',

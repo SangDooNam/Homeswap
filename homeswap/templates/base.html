@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token }}">
+
+        <script src="https://unpkg.com/htmx.org"></script>
+
+        <!-- css -->
+        <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.body.addEventListener('htmx:configRequest', (event) => {
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    event.detail.headers['X-CSRFToken'] = csrfToken;
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <header>
+            <div class="header-content">
+                    <h2><a href="{% url 'accounts:home' %}">Homeswap</a></h2>
+            </div>
+            <div class="auth-links">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'accounts:profile' %}">Profile</a> |
+                    <a href="{% url 'accounts:logout' %}">Log out</a>
+                {% else %}
+                    <a href="/accounts/login/">Log in</a> |
+                    <a href="{% url 'accounts:registration' %}">Sign up</a>
+                {% endif %}
+            </div>
+        </header>
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+        <footer>
+            <p>© Final Project Group 2</p>
+        </footer>
+    </body>
+</html>
+
