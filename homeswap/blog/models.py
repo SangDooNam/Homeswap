@@ -10,6 +10,7 @@ class BlogPost(models.Model):
     date_period = models.DateField()
     num_travelers = models.PositiveIntegerField()
     description = models.TextField()
+    home_photos = models.ManyToManyField('accounts.HomePhoto', related_name='blog_posts')
     
 
     def save(self, *args, **kwargs):
