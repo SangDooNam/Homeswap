@@ -1,9 +1,9 @@
 from django.db import models
-from accounts.models import User, Homephoto
+from accounts.models import User, HomePhoto
 
 class BlogPost(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    from_city = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
     max_capacity = models.PositiveIntegerField()
     to_city = models.CharField(max_length=100)
     date_period = models.DateField()
@@ -13,6 +13,6 @@ class BlogPost(models.Model):
     
 
     def save(self, *args, **kwargs):
-        self.from_city = self.user.city
+        self.location = self.user.location
         self.max_capacity = self.user.max_capacity
         super().save(*args, **kwargs)
