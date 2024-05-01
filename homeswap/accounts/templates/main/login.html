@@ -1,4 +1,20 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Login</h2>
+<form method="post" action="{% url 'account_login' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+</form>
+
+<a href="{% url 'account_reset_password' %}">Forgot Password?</a>
+{% endblock %}
+
+
+
+{% comment %} {% extends "base.html" %}
+{% load socialaccount %}
 {% block title %} Sign in {% endblock %}
 {% block content %}
 <br><br><br>
@@ -12,10 +28,10 @@
                     <td>{{ form.password.label }}</td>
                     <td>{{ form.password }}</td>
                     <td class="social-container">
-                        <button class="btn btn-primary mb-2">
-                            <a href="/accounts/login/">Login</a>
-                        </button>
+                        <a href="{% provider_login_url 'google' method='oauth2' %}" class="btn btn-primary mb-2">Google Login</a>
+                        <a href="{% provider_login_url 'facebook' method='oauth2' %}" class="btn btn-primary mb-2">Facebook Login</a>
                     </td>
+                    
                 </tr>
             </table>
         </div>
@@ -24,4 +40,4 @@
             <input type='submit' value='Submit'>
         </div>
     </form>
-{% endblock %}
+{% endblock %} {% endcomment %}

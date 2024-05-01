@@ -165,6 +165,8 @@ AUTHENTICATION_BACKENDS = [
 
 SITE_ID = 1
 
+# ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+
 # LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = '/'
 # LOGOUT_URL = 'logout'
@@ -193,28 +195,27 @@ SOCIAL_AUTH_PIPELINE = (
 )
 
 SOCIALACCOUNT_PROVIDERS = {
-    'facebook': {
-        'METHOD': 'oauth2',
-        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
-        'SCOPE': ['email', 'public_profile'],
-        'AUTH_PARAMS': {'auth_type': 'reauthenticate',
-                        'access_type': 'online'},
-        'INIT_PARAMS': {'cookie': True},
-        'FIELDS': [
-            'id',
-            'first_name',
-            'last_name',
-            'middle_name',
-            'name',
-            'name_format',
-            'picture',
-            'short_name'
-        ],
-        'EXCHANGE_TOKEN': True,
-        'LOCALE_FUNC': lambda request: 'en_US',
-        'VERIFIED_EMAIL': False,
-        'VERSION': 'v7.0',
-    },
+    # 'facebook': {
+    #     'METHOD': 'oauth2',
+    #     'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
+    #     'SCOPE': ['email', 'public_profile'],
+    #     'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+    #     'INIT_PARAMS': {'cookie': True},
+    #     'FIELDS': [
+    #         'id',
+    #         'first_name',
+    #         'last_name',
+    #         'middle_name',
+    #         'name',
+    #         'name_format',
+    #         'picture',
+    #         'short_name'
+    #     ],
+    #     'EXCHANGE_TOKEN': True,
+    #     'LOCALE_FUNC': lambda request: 'en_US',
+    #     'VERIFIED_EMAIL': False,
+    #     'VERSION': 'v7.0',
+    # },
     'google' : {
         'SCOPE' : [
             'profile',

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load allauth account %}
+{% load socialaccount %}
+
+{% block head_title %}
+    {% trans "Sign In" %}
+{% endblock %}
+
+{% block content %}
+    <h1>{% trans "Sign In" %}</h1>
+
+    {% if not SOCIALACCOUNT_ONLY %}
+        <p>
+            {% blocktranslate %}If you have not created an account yet, then please <a href="{{ signup_url }}">sign up</a> first.{% endblocktranslate %}
+        </p>
+        <form method="post" action="{% url 'account_login' %}">
+            {% csrf_token %}
+            {% comment %}Render form fields here{% endcomment %}
+            {{ form.as_p }}
+            <button type="submit">{% trans "Sign In" %}</button>
+        </form>
+    {% endif %}
+
+    {% if LOGIN_BY_CODE_ENABLED %}
+        <hr>
+        <h2>
+            <a href="{{ request_login_code_url }}">{% trans "Mail me a sign-in code" %}</a>
+        </h2>
+    {% endif %}
+
+    {% if SOCIALACCOUNT_ENABLED %}
+        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+    {% endif %}
+{% endblock %}
