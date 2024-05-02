@@ -33,7 +33,8 @@
                     <a href="{% url 'accounts:logout' %}">Log out</a>
                 {% else %}
                     <a href="/accounts/login/">Log in</a> |
-                    <a href="{% url 'accounts:registration' %}">Sign up</a>
+                    <a href="/accounts/signup/">Sign up</a>
+                    {% comment %} <a href="{% url 'accounts:registration' %}">Sign up</a> {% endcomment %}
                 {% endif %}
             </div>
         </header>
