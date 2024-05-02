@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 
-
 {% block content %}
 <div id ='refresh'>
 <section id="left-section">
@@ -11,19 +10,23 @@
         <table class="table custom-table">
             {% if profile.profile_photo %}
                 <tr style="text-align: left;">
-                    <td><img src="{{ profile.photo.url }}" alt="{{ profile.username }}'s photo"></td>
+                    <td><img src="{{ profile.profile_photo.url }}" alt="{{ profile.username }}'s photo"></td>
                 </tr>
             {% endif %}
             <tr style="text-align: left;"><td><p>First name : {{ profile.first_name }}</p></td></tr>
             <tr style="text-align: left;"><td><p>Last name : {{ profile.last_name }}</p></td></tr>
             <tr style="text-align: left;"><td><p>E-mail address : {{ profile.email }}</p></td></tr>
             <tr style="text-align: left;"><td><p>Location : {{ profile.addresse }}</p></td></tr>
-            <tr style="text-align: left;"><td><p>Location : {{ profile.postal_code }}</p></td></tr>
+            <tr style="text-align: left;"><td><p>Postal code : {{ profile.postal_code }}</p></td></tr>
             <tr style="text-align: left;"><td><p>Phone number : {{ profile.phone_number }}</p></td></tr>
             <tr style="text-align: left;"><td><p>Biography : {{ profile.biography }}</p></td></tr>
         </table>
         <br><br><br><br>
-        <button><a href="{% url '' %}" class="btn btn-primary">Edit Profile</a></button>
+        <button><a href="{% url 'accounts:profile_edit' %}" class="btn btn-primary">Edit Profile</a></button>
+    </div>
+    <div>
+        {% comment %} <button><a href="{% url 'accounts:image_upload' %}">Add pictures</a></button> {% endcomment %}
+        {% include "partials/image_upload.html" %}
     </div>
 </section>
 <section id="right-section">

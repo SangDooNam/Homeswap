@@ -75,6 +75,10 @@ class ProfileForm(forms.ModelForm):
             'biography',
             'profile_photo',
         ]
+        labels = {
+            'profile_photo': '',
+        }
+        
         
 class HomePhotoForm(forms.ModelForm):
     

@@ -1,0 +1,21 @@
+<div>
+    <h2>Add your home pictures</h2>
+    <form method="post" enctype="multipart/form-data"> 
+        {% csrf_token %}
+        {{ form.management_form }}
+        <table>
+            {% for form in form.forms %}
+            <tr>
+                <td>{{ form.label_tag }}</td>
+                <td>{{ form }}</td>
+                {% if form.non_field_errors %}
+                    <td>{{ form.non_field_errors }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+        <div>
+            <input type="submit" value="Submit">
+        </div> 
+    </form>
+</div>

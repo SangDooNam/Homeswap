@@ -1,7 +1,8 @@
+from django.forms import BaseModelForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models.base import Model as Model
 from django.db.models.query import QuerySet, Q
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest, JsonResponse, HttpResponseRedirect
 from django.http.response import HttpResponse as HttpResponse
 from django.contrib.auth.views import LoginView
 from django.urls import reverse, reverse_lazy
@@ -11,10 +12,11 @@ from django.views.generic import TemplateView, FormView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
+from django.forms import modelformset_factory
 
 from typing import Any
-from .models import AppUser
-from .forms import RegistrationForm, ProfileForm, LoginForm
+from .models import AppUser, HomePhoto
+from .forms import RegistrationForm, ProfileForm, LoginForm, HomePhotoForm
 import logging
 logger = logging.getLogger(__name__)
 
@@ -71,5 +73,54 @@ class ProfileView(DetailView):
     model = AppUser
     template_name = 'main/profile.html'
     context_object_name = 'profile'
+    form_class = modelformset_factory(HomePhoto, form=HomePhotoForm, extra=3)
+    success_url = reverse_lazy('accounts:profile')
     
+    def get_object(self, queryset: QuerySet[reverse_lazy] | None = ...) -> Model:
+        try:
+            if self.request.user.is_authenticated:
+                return self.request.user
+        except self.request.user.DoesNotExist as error:
+            raise error
     
+    def get_context_data(self, **kwargs: reverse_lazy) -> dict[str, Any]:
+        context =  super().get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class(queryset=HomePhoto.objects.none())
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        formset = self.form_class(request.POST, request.FILES, queryset=HomePhoto.objects.none())
+        if formset.is_valid():
+            instances = formset.save(commit=False)
+            for instance in instances:
+                instance.user = request.user
+                instance.save()
+            formset.save()
+            return HttpResponseRedirect(self.success_url)
+        else:
+            return self.form_invalid(formset)
+    
+    def form_invalid(self, formset):
+        return self.render_to_response(self.get_context_data(form=formset))
+
+
+class ProfileEditView(UpdateView):
+    form_class = ProfileForm
+    template_name = "main/edit_profile.html"
+    success_url = reverse_lazy('accounts:profile')
+    
+    def get_object(self, queryset: QuerySet[reverse_lazy] | None = ...) -> Model:
+        try:
+            if self.request.user.is_authenticated:
+                return self.request.user
+        except self.request.user.DoesNotExist as error:
+            raise error
+        
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        if self.request.user.is_authenticated:
+            return super().form_valid(form)
+        else:
+            return super().form_invalid(form)
+        
+
