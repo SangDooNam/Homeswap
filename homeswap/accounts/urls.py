@@ -1,6 +1,6 @@
 from django.urls import path, include
 from .views import (RegistrationView, LogInView, log_out, HomeView, ProfileView,
-                    some_view_before_oauth, ProfileEditView)
+                    some_view_before_oauth, ProfileEditView, ImageUploadView)
 
 app_name = 'accounts'
 
@@ -12,5 +12,5 @@ urlpatterns = [
     path('profile/', ProfileView.as_view(), name='profile'),
     path('logging/', some_view_before_oauth, name='logging'),
     path('profile_edit/', ProfileEditView.as_view(), name='profile_edit'),
-    # path('image_upload/', ImageUploadView.as_view(), name='image_upload'),
+    path('image_upload/', ImageUploadView.as_view(), name='image_upload')
 ]

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div id ='refresh'>
+<div>
 <section id="left-section">
 </section>
 <section id="middle-section">
@@ -25,7 +25,6 @@
         <button><a href="{% url 'accounts:profile_edit' %}" class="btn btn-primary">Edit Profile</a></button>
     </div>
     <div>
-        {% comment %} <button><a href="{% url 'accounts:image_upload' %}">Add pictures</a></button> {% endcomment %}
         {% include "partials/image_upload.html" %}
     </div>
 </section>

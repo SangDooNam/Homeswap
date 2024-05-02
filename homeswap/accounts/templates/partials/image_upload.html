@@ -1,21 +1,52 @@
-<div>
+<div id='refresh'>
     <h2>Add your home pictures</h2>
-    <form method="post" enctype="multipart/form-data"> 
+    <form method="post" enctype="multipart/form-data" hx-encoding="multipart/form-data" hx-post="{% url 'accounts:image_upload' %}" hx-target='#refresh'> 
+        {% if photos %}
+        <table>
+            {% for photo in photos %}
+            <tr>
+                <td><img src="{{ photo.image.url }}" alt="{{ photo.photo_type }}"></td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
         {% csrf_token %}
         {{ form.management_form }}
         <table>
             {% for form in form.forms %}
             <tr>
-                <td>{{ form.label_tag }}</td>
-                <td>{{ form }}</td>
-                {% if form.non_field_errors %}
-                    <td>{{ form.non_field_errors }}</td>
-                {% endif %}
+                <td>
+                    {{ form.label_tag }} {{ form }}
+                </td>
             </tr>
             {% endfor %}
         </table>
         <div>
+            {% comment %} <button type="submit" hx-post="{% url 'accounts:image_upload' %}" hx-target='#refresh'>Submit</button> {% endcomment %}
             <input type="submit" value="Submit">
         </div> 
     </form>
 </div>
+
+
+{% comment %} <table>
+    {% for form in form.forms %}
+    <tr>
+        {% for field in form %}
+        <td>
+            {{ field.label_tag }} {{ field }}
+            {% for error in field.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        </td>
+        {% endfor %}
+        {% if form.non_field_errors %}
+        <td>
+            {% for error in form.non_field_errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        </td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table> {% endcomment %}
