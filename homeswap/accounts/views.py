@@ -55,6 +55,7 @@ class LogInView(LoginView):
 
 
 class RegistrationView(FormView):
+    
     template_name = 'main/registration.html'
     success_url = reverse_lazy('accounts:home')
     form_class = RegistrationForm
@@ -70,6 +71,7 @@ def log_out(request):
 
 
 class ProfileView(DetailView):
+    
     model = AppUser
     template_name = 'main/profile.html'
     context_object_name = 'profile'
@@ -94,9 +96,29 @@ class ProfileView(DetailView):
         context['photos'] = photos
         
         return context
+    
+    def post(self, request, *args, **kwargs):
+        formset = self.form_class(request.POST, request.FILES, queryset=HomePhoto.objects.none())
+        
+        if formset.is_valid() and request.FILES:
+            instances = formset.save(commit=False)
+            for instance in instances:
+                instance.user = request.user
+                instance.save()
+            formset.save()
+            #print('Formset saved successfully.')
+            return HttpResponseRedirect(self.success_url)
+        else:
+            #print('Formset is invalid:', formset.errors)
+            return self.form_invalid(formset)
+    
+    def form_invalid(self, formset):
+        context = self.get_context_data(form=formset)
+        return self.render_to_response(context)
 
 
 class ProfileEditView(UpdateView):
+    
     form_class = ProfileForm
     template_name = "main/edit_profile.html"
     success_url = reverse_lazy('accounts:profile')
@@ -114,40 +136,13 @@ class ProfileEditView(UpdateView):
         else:
             return super().form_invalid(form)
 
-class ImageUploadView(FormView):
-    form_class = modelformset_factory(HomePhoto, form=HomePhotoForm, extra=3)
-    template_name = 'partials/image_upload.html'
-    success_url = reverse_lazy('accounts:image_upload')
+
+def delete_image(request, pk):
     
-    def get_context_data(self, **kwargs: reverse_lazy) -> dict[str, Any]:
-        context =  super().get_context_data(**kwargs)
-        
-        if 'form' not in context:
-            context['form'] = self.form_class(queryset=HomePhoto.objects.none())
-            
-        photos = HomePhoto.objects.all()
-        context['photos'] = photos
-        
-        return context
-    
-    def post(self, request, *args, **kwargs):
-        formset = self.form_class(request.POST, request.FILES, queryset=HomePhoto.objects.none())
-        print("POST Data:", request.POST)
-        print("FILES Data:", request.FILES)
-        if formset.is_valid() and request.FILES:
-            print("POST Data:", request.POST)
-            print("FILES Data:", request.FILES)
-            instances = formset.save(commit=False)
-            for instance in instances:
-                instance.user = request.user
-                instance.save()
-            formset.save()
-            print('Formset saved successfully.')
-            return HttpResponseRedirect(self.success_url)
-        else:
-            print('Formset is invalid:', formset.errors)
-            return self.form_invalid(formset)
-    
-    def form_invalid(self, formset):
-        context = self.get_context_data(form=formset)
-        return self.render_to_response(context)
+    user = request.user
+    try:
+        image_to_delete = HomePhoto.objects.get(pk=pk, user=user)
+        image_to_delete.delete()
+        return redirect(reverse('accounts:profile'))
+    except HomePhoto.DoesNotExist:
+        raise HttpResponse("Image not found", status=400)

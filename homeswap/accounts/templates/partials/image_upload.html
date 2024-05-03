@@ -1,15 +1,19 @@
-<div id='refresh'>
+<div>
     <h2>Add your home pictures</h2>
-    <form method="post" enctype="multipart/form-data" hx-encoding="multipart/form-data" hx-post="{% url 'accounts:image_upload' %}" hx-target='#refresh'> 
+
         {% if photos %}
         <table>
             {% for photo in photos %}
             <tr>
-                <td><img src="{{ photo.image.url }}" alt="{{ photo.photo_type }}"></td>
+                <td>
+                    <img src="{{ photo.image.url }}" alt="{{ photo.photo_type }}">
+                    <button type='button' hx-post="{% url 'accounts:delete_image' pk=photo.pk %}" hx-target='#refresh'>Delete</button>
+                </td>
             </tr>
             {% endfor %}
         </table>
         {% endif %}
+        <form method="post" enctype="multipart/form-data" hx-encoding="multipart/form-data" hx-post="{% url 'accounts:profile' %}" hx-target='#refresh'>
         {% csrf_token %}
         {{ form.management_form }}
         <table>
