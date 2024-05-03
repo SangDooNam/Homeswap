@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import BaseFormSet, modelformset_factory
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
@@ -85,3 +86,22 @@ class HomePhotoForm(forms.ModelForm):
     class Meta:
         model = HomePhoto
         fields = ['image', 'photo_type']
+        
+# def validate_max_photos(formset):
+    
+#     max_photos = 10
+#     if len(formset.forms) > max_photos:
+#         raise forms.ValidationError(f"You can upload a maximum of {max_photos} photos.")
+    
+# class LimitedPhotoFormSet(BaseFormSet):
+#     def clean(self):
+#         super().clean()
+#         validate_max_photos(self)
+
+
+# HomePhotoFormSet = modelformset_factory(
+#     HomePhoto,
+#     form=HomePhotoForm,
+#     extra=3,
+#     max_num=10
+# )

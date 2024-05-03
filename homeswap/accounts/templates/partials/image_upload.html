@@ -1,6 +1,6 @@
 <div>
     <h2>Add your home pictures</h2>
-
+    <p>You can upload a maximum 10 Photos. {{ left_amount }} remaining.</p>
         {% if photos %}
         <table>
             {% for photo in photos %}
@@ -13,7 +13,7 @@
             {% endfor %}
         </table>
         {% endif %}
-        <form method="post" enctype="multipart/form-data" hx-encoding="multipart/form-data" hx-post="{% url 'accounts:profile' %}" hx-target='#refresh'>
+        <form id='image-upload-form' method="post" enctype="multipart/form-data" hx-encoding="multipart/form-data" hx-post="{% url 'accounts:profile' %}" hx-target='#refresh'>
         {% csrf_token %}
         {{ form.management_form }}
         <table>
@@ -25,12 +25,24 @@
             </tr>
             {% endfor %}
         </table>
+        {% if extra_num %}
         <div>
-            {% comment %} <button type="submit" hx-post="{% url 'accounts:image_upload' %}" hx-target='#refresh'>Submit</button> {% endcomment %}
+            <progress id='image-upload-progress' value='0' max='100'></progress>
+        </div>
+        <div>
             <input type="submit" value="Submit">
-        </div> 
+        </div>
+        {% else %}
+        <div>
+        </div>
+        {% endif %}
     </form>
 </div>
+<script>
+    htmx.on('#image-upload-form', 'htmx:xhr:progress', function(evt) {
+      htmx.find('#image-upload-progress').setAttribute('value', evt.detail.loaded/evt.detail.total * 100)
+    });
+</script>
 
 
 {% comment %} <table>

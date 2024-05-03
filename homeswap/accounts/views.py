@@ -16,7 +16,7 @@ from django.forms import modelformset_factory
 
 from typing import Any
 from .models import AppUser, HomePhoto
-from .forms import RegistrationForm, ProfileForm, LoginForm, HomePhotoForm
+from .forms import RegistrationForm, ProfileForm, HomePhotoForm #HomePhotoFormSet
 import logging
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,6 @@ class HomeView(TemplateView):
     
     template_name = 'main/home.html'
     
-
 
 class LogInView(LoginView):
     
@@ -75,8 +74,15 @@ class ProfileView(DetailView):
     model = AppUser
     template_name = 'main/profile.html'
     context_object_name = 'profile'
-    form_class = modelformset_factory(HomePhoto, form=HomePhotoForm, extra=3)
+    #form_class = modelformset_factory(HomePhoto, form=HomePhotoForm, extra=3, max_num=10)
     success_url = reverse_lazy('accounts:profile')
+    
+    def get_form_class(self):
+        current_photos_count = HomePhoto.objects.filter(user=self.request.user).count()
+        max_photos = 10
+        self.left_amount = max_photos-current_photos_count
+        self.extra_forms = min(3, self.left_amount)
+        return modelformset_factory(HomePhoto, HomePhotoForm, extra=self.extra_forms, max_num=max_photos)
     
     def get_object(self, queryset: QuerySet[reverse_lazy] | None = ...) -> Model:
         if self.request.user.is_authenticated:
@@ -89,16 +95,20 @@ class ProfileView(DetailView):
         if not hasattr(self, 'object'):
             self.get_object()
         context =  super().get_context_data(**kwargs)
+        FormClass = self.get_form_class()
         if 'form' not in context:
-            context['form'] = self.form_class(queryset=HomePhoto.objects.none())
-            
+            context['form'] = FormClass(queryset=HomePhoto.objects.none())
+        
         photos = HomePhoto.objects.all()
         context['photos'] = photos
+        context['extra_num'] = self.extra_forms
+        context['left_amount'] = self.left_amount
         
         return context
     
     def post(self, request, *args, **kwargs):
-        formset = self.form_class(request.POST, request.FILES, queryset=HomePhoto.objects.none())
+        FormClass = self.get_form_class()
+        formset = FormClass(request.POST, request.FILES, queryset=HomePhoto.objects.none())
         
         if formset.is_valid() and request.FILES:
             instances = formset.save(commit=False)
@@ -106,6 +116,8 @@ class ProfileView(DetailView):
                 instance.user = request.user
                 instance.save()
             formset.save()
+            print('this', request.POST)
+            print(request.FILES)
             #print('Formset saved successfully.')
             return HttpResponseRedirect(self.success_url)
         else:
