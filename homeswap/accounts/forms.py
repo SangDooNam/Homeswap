@@ -71,13 +71,18 @@ class ProfileForm(forms.ModelForm):
             'first_name',
             'last_name',
             'email',
-            'addresse',
             'phone_number',
+            'street',
+            'location',
+            'postal_code',
             'biography',
             'profile_photo',
         ]
         labels = {
             'profile_photo': '',
+        }
+        widgets = {
+            'postal_code': forms.NumberInput(attrs={'class': 'no-spinners'}),
         }
         
         
@@ -86,22 +91,3 @@ class HomePhotoForm(forms.ModelForm):
     class Meta:
         model = HomePhoto
         fields = ['image', 'photo_type']
-        
-# def validate_max_photos(formset):
-    
-#     max_photos = 10
-#     if len(formset.forms) > max_photos:
-#         raise forms.ValidationError(f"You can upload a maximum of {max_photos} photos.")
-    
-# class LimitedPhotoFormSet(BaseFormSet):
-#     def clean(self):
-#         super().clean()
-#         validate_max_photos(self)
-
-
-# HomePhotoFormSet = modelformset_factory(
-#     HomePhoto,
-#     form=HomePhotoForm,
-#     extra=3,
-#     max_num=10
-# )

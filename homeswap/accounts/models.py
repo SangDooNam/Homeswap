@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 from phonenumber_field.modelfields import PhoneNumberField
-from django.core.validators import MaxValueValidator, MinValueValidator
+
 
 # Create your models here.
 
@@ -21,8 +23,8 @@ class AppUser(AbstractUser):
     profile_photo = models.ImageField(upload_to='profile_photo', default='profile_photo/default.jpg')
     phone_number = PhoneNumberField(null=True, blank=True)
     biography = models.TextField(null=True, blank=True)
-    addresse = models.TextField(max_length=100, null=True, blank=True)
-    location = models.TextField(max_length=50, null=True, blank=True)
+    street = models.CharField(max_length=100, null=True, blank=True)
+    location = models.CharField(max_length=50, null=True, blank=True)
     max_capacity = models.SmallIntegerField(null=True, blank=True)
     postal_code = models.IntegerField(validators=[MinValueValidator(100000), MaxValueValidator(999999)], null=True, blank=True)
     birthday_date = models.DateField(null=True, blank=True)

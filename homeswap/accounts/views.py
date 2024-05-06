@@ -13,6 +13,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory
+from django.core.exceptions import PermissionDenied
 
 from typing import Any
 from .models import AppUser, HomePhoto
@@ -74,15 +75,16 @@ class ProfileView(DetailView):
     model = AppUser
     template_name = 'main/profile.html'
     context_object_name = 'profile'
-    #form_class = modelformset_factory(HomePhoto, form=HomePhotoForm, extra=3, max_num=10)
     success_url = reverse_lazy('accounts:profile')
     
     def get_form_class(self):
+        if not self.request.user.is_authenticated:
+            raise PermissionDenied("You must be logged in to upload photos.")
         current_photos_count = HomePhoto.objects.filter(user=self.request.user).count()
         max_photos = 10
         self.left_amount = max_photos-current_photos_count
         self.extra_forms = min(3, self.left_amount)
-        return modelformset_factory(HomePhoto, HomePhotoForm, extra=self.extra_forms, max_num=max_photos)
+        return modelformset_factory(HomePhoto, HomePhotoForm, extra=self.extra_forms, max_num=max_photos, fields=['image', 'photo_type'])
     
     def get_object(self, queryset: QuerySet[reverse_lazy] | None = ...) -> Model:
         if self.request.user.is_authenticated:
@@ -99,7 +101,7 @@ class ProfileView(DetailView):
         if 'form' not in context:
             context['form'] = FormClass(queryset=HomePhoto.objects.none())
         
-        photos = HomePhoto.objects.all()
+        photos = HomePhoto.objects.filter(user=self.request.user)
         context['photos'] = photos
         context['extra_num'] = self.extra_forms
         context['left_amount'] = self.left_amount
@@ -142,6 +144,7 @@ class ProfileEditView(UpdateView):
         except self.request.user.DoesNotExist as error:
             raise error
         
+        
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         if self.request.user.is_authenticated:
             return super().form_valid(form)
@@ -158,3 +161,4 @@ def delete_image(request, pk):
         return redirect(reverse('accounts:profile'))
     except HomePhoto.DoesNotExist:
         raise HttpResponse("Image not found", status=400)
+

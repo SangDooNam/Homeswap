@@ -31,3 +31,75 @@ img{
     color: white;
     text-decoration: none;
 }
+
+input.no-spinners {
+    -moz-appearance: textfield; /* For Firefox */
+}
+
+
+.custom-card-bg {
+    background-color: #f8f9fa; /* A light gray, as an example */
+}
+
+.profile-table {
+    width: 40%;      
+    height: auto;    
+    margin: auto; 
+}
+
+.img-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%
+}
+
+.image-thumbnail {
+    position: relative;
+    display: inline-block;
+}
+
+.image-thumbnail .delete-button {
+    position: absolute;
+    top: 5px;
+    right: 13px;
+    display: none;
+    opacity: 0.8;
+    width: 45px;  /* Set the width of the button */
+    height: 30px;  /* Set the height of the button */
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-thumbnail:hover .delete-button {
+    display: flex;
+}
+
+.carousel-item img {
+    width: auto;  /* Allows the image to adjust width based on its aspect ratio */
+    max-width: 100%;  /* Ensures the image does not exceed the width of the carousel */
+    height: 800px;  /* Fixed height for all images */
+    object-fit: contain;  /* Ensures the image is scaled properly within the dimensions */
+    margin: auto;  /* Centers the image horizontally in the carousel */
+}
+
+/* This CSS will hide the spinner controls for all input[type='number'] elements */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Targeting only the input fields with the 'no-spinners' class */
+input.no-spinners::-webkit-inner-spin-button,
+input.no-spinners::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
