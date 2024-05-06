@@ -1,8 +1,8 @@
 from django.db import models
-from accounts.models import User, HomePhoto
+from accounts.models import AppUser, HomePhoto
 
 class BlogPost(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
     location = models.CharField(max_length=100)
     max_capacity = models.PositiveIntegerField()
     to_city = models.CharField(max_length=100)
