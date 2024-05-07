@@ -1,0 +1,97 @@
+<div>
+    <h2>Add your home pictures</h2>
+        <div class="container mt-4">
+            <!-- Bootstrap Carousel -->
+            <div id="imageCarousel" class="carousel slide">
+                <!-- Carousel Items -->
+                <div class="carousel-inner">
+                    {% for photo in photos %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <img src="{{ photo.image.url }}" class="d-block w-100" alt="{{ photo.photo_type }}">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>{{ photo.photo_type }}</h5>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <!-- Carousel Controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        
+            <!-- Thumbnails -->
+            <div class="row mt-3">
+                {% for photo in photos %}
+                <div class="col-2 image-thumbnail">
+                    <img src="{{ photo.image.url }}" class="img-fluid" data-bs-target="#imageCarousel" data-bs-slide-to="{{ forloop.counter0 }}" alt="{{ photo.photo_type }}">
+                    <button type='button' class="btn btn-danger delete-button" hx-post="{% url 'accounts:delete_image' pk=photo.pk %}" hx-target='#refresh'>Delete</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <br>
+        <form id='image-upload-form' method="post" enctype="multipart/form-data" hx-encoding="multipart/form-data" hx-post="{% url 'accounts:profile' %}" hx-target='#refresh'>
+        {% csrf_token %}
+        {{ form.management_form }}
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-9">
+                    <table class="table table-bordered table-light">
+                        <p>You can upload a maximum 10 Photos. {{ left_amount }} remaining.</p>
+                        {% if form.forms.0.photo_type.help_text %}
+                            <div class="mb-2">
+                                <small class="form-text text-muted">{{ form.forms.0.photo_type.help_text }}</small>
+                            </div>
+                        {% endif %}
+                        {% for form in form.forms %}
+                        <tr>
+                            <td>
+                                {{ form.image.label_tag }} {{ form.image }}
+                                {% if form.image.errors %}
+                                    {% for error in form.image.errors %}
+                                        <div style="color: red;">{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ form.photo_type.label_tag }} {{ form.photo_type }}
+                                {% if form.photo_type.errors %}
+                                    {% for error in form.photo_type.errors %}
+                                        <div style="color: red;">{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    {% if extra_num %}
+                        <div class="progress">
+                            <div id="image-upload-progress-bar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <br>
+                        <div style="margin-top: 20px; justify-content: center; align-items: center;">
+                            <input type="submit" value="Submit" class="btn btn-primary" role="button">
+                        </div>
+                    {% else %}
+                        <div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    htmx.on('#image-upload-form', 'htmx:xhr:progress', function(evt) {
+        var percent = (evt.detail.loaded / evt.detail.total) * 100;
+        var progressBar = htmx.find('#image-upload-progress-bar');
+        progressBar.style.width = percent + '%';
+        progressBar.setAttribute('aria-valuenow', percent);
+    });
+</script>
