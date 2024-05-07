@@ -36,33 +36,33 @@ class HomeView(TemplateView):
     template_name = 'main/home.html'
     
 
-class LogInView(LoginView):
+# class LogInView(LoginView):
     
-    form_class = AuthenticationForm
-    redirect_authenticated_user = True
-    template_name = 'main/login.html'
+#     form_class = AuthenticationForm
+#     redirect_authenticated_user = True
+#     template_name = 'main/login.html'
     
-    def get_success_url(self) -> str:
-        if self.request.user.is_admin:
-            return reverse_lazy('admin_dashboard')
-        return reverse_lazy('user_dashboard')
+#     def get_success_url(self) -> str:
+#         if self.request.user.is_admin:
+#             return reverse_lazy('admin_dashboard')
+#         return reverse_lazy('user_dashboard')
     
-    def dispatch(self, request: HttpRequest, *args: reverse_lazy, **kwargs: reverse_lazy) -> HttpResponse:
-        if self.redirect_authenticated_user and self.request.user.is_authenticated:
-            return redirect(self.get_success_url())
+#     def dispatch(self, request: HttpRequest, *args: reverse_lazy, **kwargs: reverse_lazy) -> HttpResponse:
+#         if self.redirect_authenticated_user and self.request.user.is_authenticated:
+#             return redirect(self.get_success_url())
         
-        return super().dispatch(request, *args, **kwargs)
+#         return super().dispatch(request, *args, **kwargs)
 
 
-class RegistrationView(FormView):
+# class RegistrationView(FormView):
     
-    template_name = 'main/registration.html'
-    success_url = reverse_lazy('accounts:home')
-    form_class = RegistrationForm
+#     template_name = 'main/registration.html'
+#     success_url = reverse_lazy('accounts:home')
+#     form_class = RegistrationForm
     
-    def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
+#     def form_valid(self, form):
+#         form.save()
+#         return super().form_valid(form)
 
 
 def log_out(request):
@@ -118,8 +118,6 @@ class ProfileView(DetailView):
                 instance.user = request.user
                 instance.save()
             formset.save()
-            print('this', request.POST)
-            print(request.FILES)
             #print('Formset saved successfully.')
             return HttpResponseRedirect(self.success_url)
         else:

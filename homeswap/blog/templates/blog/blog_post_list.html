@@ -1,18 +1,13 @@
 <!-- blog_post_list.html -->
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Post List</title>
-</head>
-<body>
+{% block content %}
+
     <h1>Blog Post List</h1>
     <ul>
         {% for blog_post in blog_posts %}
             <li>{{ blog_post.to_city }} - {{ blog_post.date_period }}</li>
         {% endfor %}
     </ul>
-</body>
-</html>
+
+{% endblock %}

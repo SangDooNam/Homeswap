@@ -1,10 +1,24 @@
 from django import forms
 from .models import BlogPost
+from django.utils.dateparse import parse_date
+import datetime
 
 
 class BlogPostForm(forms.ModelForm):
-    start_date = forms.DateField(label='Start Date')
-    end_date = forms.DateField(label='End Date')
+    start_date = forms.DateField(
+        label='Start Date',
+        widget=forms.DateInput(
+            attrs={
+                'type':"date",
+            }
+        ))
+    end_date = forms.DateField(
+        label='End Date',
+        widget=forms.DateInput(
+            attrs={
+                'type':"date",
+            }
+        ))
 
     class Meta:
         model = BlogPost
@@ -24,7 +38,7 @@ class BlogPostForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        instance.date_period = (self.cleaned_data['start_date'], self.cleaned_data['end_date'])
+        instance.date_period = str(self.cleaned_data['start_date'], self.cleaned_data['end_date'])
         if commit:
             instance.save()
         return instance

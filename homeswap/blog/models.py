@@ -7,7 +7,7 @@ class BlogPost(models.Model):
     max_capacity = models.PositiveIntegerField()
     to_city = models.CharField(max_length=100)
     date_period = models.DateField()
-    num_travelers = models.PositiveIntegerField()
+    num_travelers = models.PositiveIntegerField(default=1)
     description = models.TextField()
     home_photos = models.ManyToManyField('accounts.HomePhoto', related_name='blog_posts')
     
