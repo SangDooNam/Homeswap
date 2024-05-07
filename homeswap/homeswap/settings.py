@@ -168,7 +168,7 @@ SITE_ID = 1
 # ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 
 # LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/profile/'
 # LOGOUT_URL = 'logout'
 # LOGOUT_REDIRECT_URL = 'login'
 
