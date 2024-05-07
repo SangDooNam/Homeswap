@@ -1,0 +1,38 @@
+<!-- create_blog_post.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Blog Post</title>
+</head>
+<body>
+    <h1>Create Blog Post</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div>
+            <label for="id_to_city">Destination City:</label>
+            {{ form.to_city }}
+        </div>
+        <div>
+            <label for="id_start_date">Start Date:</label>
+            {{ form.start_date }}
+        </div>
+        <div>
+            <label for="id_end_date">End Date:</label>
+            {{ form.end_date }}
+        </div>
+        <div>
+            <label for="id_num_travelers">Number of Travelers:</label>
+            {{ form.num_travelers }}
+        </div>
+        <div>
+            <label for="id_description">Description:</label>
+            {{ form.description }}
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
