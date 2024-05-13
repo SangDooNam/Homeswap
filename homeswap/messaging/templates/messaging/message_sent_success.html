@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Message Sent!</h2>
+  <p>Your message has been successfully sent.</p>
+  <a href="{% url 'send_message' %}">Send another message</a>
+{% endblock %}

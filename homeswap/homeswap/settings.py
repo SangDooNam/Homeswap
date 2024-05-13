@@ -93,6 +93,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'homeswap.wsgi.application'
 
 
@@ -156,6 +157,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# SUPPORT. carlos added here
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Your SMTP server host
+EMAIL_PORT = 587  # Port for SMTP server
+EMAIL_USE_TLS = True  # Whether to use TLS for secure connection
+EMAIL_HOST_USER = 'dci.team2@gmail.com'  # Your email address for sending emails
+EMAIL_HOST_PASSWORD = 'kqrjttrqswgipacr'  # Your email password or app password
+DEFAULT_FROM_EMAIL = 'dci.team2@gmail.com'  # Default sender email address
+EMAIL_SUBJECT_PREFIX = '[Support]'  # Prefix for email subjects
+
 
 AUTH_USER_MODEL = 'accounts.AppUser'
 
