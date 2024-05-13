@@ -6,9 +6,9 @@
     {% if not SOCIALACCOUNT_ONLY %}
         {% element hr %}
         {% endelement %}
-        {% element h2 %}
-            {% translate "Or use a third-party" %}
-        {% endelement %}
+        {% comment %} {% element h2 %} {% endcomment %}
+            <h2 class="fs-5 fw-bold mb-3">{% translate "Or use a third-party" %}</h2>
+        {% comment %} {% endelement %} {% endcomment %}
     {% endif %}
     {% include "socialaccount/snippets/provider_list.html" with process="login" %}
     {% include "socialaccount/snippets/login_extra.html" %}

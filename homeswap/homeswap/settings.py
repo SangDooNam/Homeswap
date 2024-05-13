@@ -12,10 +12,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv
 import psycopg2
-load_dotenv()
+from dotenv import load_dotenv
 
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -173,7 +173,7 @@ SITE_ID = 1
 # ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 
 # LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/profile/'
 # LOGOUT_URL = 'logout'
 # LOGOUT_REDIRECT_URL = 'login'
 

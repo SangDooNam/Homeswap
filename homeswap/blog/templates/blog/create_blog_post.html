@@ -1,38 +1,25 @@
 <!-- create_blog_post.html -->
+{% extends "base.html" %}
+{% load account_tag %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Blog Post</title>
-</head>
-<body>
-    <h1>Create Blog Post</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <div>
-            <label for="id_to_city">Destination City:</label>
-            {{ form.to_city }}
+{% block content %}
+<div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <h1>Create Blog Post</h1>
+                <form method="POST">
+                    {% csrf_token %}
+                    {% for field in form %}
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            <div class="mb-3">
+                                {{ field|add_class:'form-control' }}
+                            </div>
+                    {% endfor %}
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </form>
+            </div>
         </div>
-        <div>
-            <label for="id_start_date">Start Date:</label>
-            {{ form.start_date }}
-        </div>
-        <div>
-            <label for="id_end_date">End Date:</label>
-            {{ form.end_date }}
-        </div>
-        <div>
-            <label for="id_num_travelers">Number of Travelers:</label>
-            {{ form.num_travelers }}
-        </div>
-        <div>
-            <label for="id_description">Description:</label>
-            {{ form.description }}
-        </div>
-        <button type="submit">Submit</button>
-    </form>
-</body>
-</html>
+    </div>
+</div>
+{% endblock %}

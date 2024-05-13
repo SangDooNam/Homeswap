@@ -76,6 +76,7 @@ class ProfileForm(forms.ModelForm):
             'location',
             'postal_code',
             'biography',
+            'max_capacity',
             'profile_photo',
         ]
         labels = {

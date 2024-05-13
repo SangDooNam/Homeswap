@@ -1,17 +1,9 @@
 from django.urls import path
-<<<<<<< HEAD
-from . import views
-
-urlpatterns = [
-    path('create/', views.create_blog_post, name='create_blog_post'),
-    path('', views.blog_post_list, name='blog_post_list'),
-]
-=======
-
+from .views import BlogListView, BlogPostView
 
 app_name = 'blog'
 
 urlpatterns = [
-    
+    path('create/', BlogPostView.as_view(), name='create_blog'),
+    path('', BlogListView.as_view(), name='home'),
 ]
->>>>>>> origin/sangdoo_nam
