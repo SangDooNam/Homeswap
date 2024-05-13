@@ -103,3 +103,32 @@ input.no-spinners::-webkit-outer-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
 }
+
+.provider-list ul {
+    list-style-type: none; /* Removes the bullet points from lists */
+    padding: 0; /* Removes padding which might be causing misalignment */
+}
+
+.provider-list li {
+    list-style-type: none; /* Ensure list items do not have bullet points */
+}
+
+.card {
+    background-color: #ffffff;
+    color: black;
+}
+.card .card-subtitle,
+.card .card-text {
+    color: #333;
+}
+.card img {
+    border-radius: 4px;
+}
+.no-photos {
+    color: red;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: skyblue; 
+}

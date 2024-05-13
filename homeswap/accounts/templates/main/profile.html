@@ -6,7 +6,7 @@
 </section>
 <section id="middle-section">
     <div style="text-align: center;">
-        <h3>{{ profile.username|capfirst }}</h3>
+        <h3>{{ profile.first_name }} {{ profile.last_name }}</h3>
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8">
@@ -16,16 +16,16 @@
                                 <td class="text-center"><img src="{{ profile.profile_photo.url }}" class="img-center img-thumbnail" alt="{{ profile.username }}'s photo"></td>
                             </tr>
                         {% endif %}
-                        <tr style="text-align: left;"><td><p>Username : {{ profile.username }}</p></td></tr>
-                        <tr style="text-align: left;"><td><p>First name : {{ profile.first_name }}</p></td></tr>
-                        <tr style="text-align: left;"><td><p>Last name : {{ profile.last_name }}</p></td></tr>
-                        <tr style="text-align: left;"><td><p>E-mail address : {{ profile.email }}</p></td></tr>
-                        <tr style="text-align: left;"><td><p>Phone number : {{ profile.phone_number }}</p></td></tr>
-                        <tr style="text-align: left;"><td><p>Street : {{ profile.street }}</p></td></tr>
-                        <tr style="text-align: left;"><td><p>Location : {{ profile.location }}</p></td></tr>
-                        <tr style="text-align: left;"><td><p>Postal code : {{ profile.postal_code }}</p></td></tr>
-                        <tr style="text-align: left;"><td><p>Occupancy limit : {{ profile.max_capacity }}</p></td></tr>
-                        <tr style="text-align: left;"><td><p>Biography : {{ profile.biography }}</p></td></tr>
+                        <tr style="text-align: left;"><td><i class="bi bi-person"></i> {{ profile.username }}</p><i class="bi bi-pen"></i></td></tr>
+                        <tr style="text-align: left;"><td><p>First name : {{ profile.first_name }}</p><i class="bi bi-pen"></i></td></tr>
+                        <tr style="text-align: left;"><td><p>Last name : {{ profile.last_name }}</p><i class="bi bi-pen"></i></td></tr>
+                        <tr style="text-align: left;"><td><p>E-mail address : {{ profile.email }}</p><i class="bi bi-pen"></i></td></tr>
+                        <tr style="text-align: left;"><td><p>Phone number : {{ profile.phone_number }}</p><i class="bi bi-pen"></i></td></tr>
+                        <tr style="text-align: left;"><td><p>Street : {{ profile.street }}</p><i class="bi bi-pen"></i></td></tr>
+                        <tr style="text-align: left;"><td><p>Location : {{ profile.location }}</p><i class="bi bi-pen"></i></td></tr>
+                        <tr style="text-align: left;"><td><p>Postal code : {{ profile.postal_code }}</p><i class="bi bi-pen"></i></td></tr>
+                        <tr style="text-align: left;"><td><p>Occupancy limit : {{ profile.max_capacity }}</p><i class="bi bi-pen"></i></td></tr>
+                        <tr style="text-align: left;"><td><p>Biography : {{ profile.biography }}</p><i class="bi bi-pen"></i></td></tr>
                     </table>
                 </div>
             </div>

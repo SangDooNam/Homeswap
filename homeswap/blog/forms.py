@@ -24,10 +24,12 @@ class BlogPostForm(forms.ModelForm):
         label='Number of travelers'
     )
     
+    location = forms.CharField()
+    
 
     class Meta:
         model = BlogPost
-        fields = ['to_city', 'start_date', 'end_date', 'num_travelers', 'description']
+        fields = ['title', 'to_city', 'start_date', 'end_date', 'num_travelers', 'description']
 
     def clean(self):
         cleaned_data = super().clean()

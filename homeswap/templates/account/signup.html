@@ -8,31 +8,35 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-5">
-            <h1>{% trans "Sign Up" %}</h1>
-            <p>{% blocktranslate %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktranslate %}</p>
-            {% if not SOCIALACCOUNT_ONLY %}
-                <form method="post" action="{% url 'account_signup' %}" class="form-horizontal">
-                    {% csrf_token %}
-                        {% for field in form %}
-                            <div class="form-floating mb-3">
-                                {{ field|add_class:'form-control' }}
-                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                                {% if field.help_text %}
-                                <small class="form-text text-muted">{{ field.help_text }}</small>
-                                {% endif %}
-                                {% for error in field.errors %}
-                                <div class="alert alert-danger">{{ error }}</div>
-                                {% endfor %}
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+                <h1  class="fw-bold mb-0 fs-2">{% trans "Sign Up" %}</h1>
+            </div>
+            <div class="modal-body p-5 pt-0">
+                <p>{% blocktranslate %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktranslate %}</p>
+                {% if not SOCIALACCOUNT_ONLY %}
+                    <form method="post" action="{% url 'account_signup' %}" class="form-horizontal">
+                        {% csrf_token %}
+                            {% for field in form %}
+                                <div class="form-floating mb-3">
+                                    {{ field|add_class:'form-control' }}
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                    {% endif %}
+                                    {% for error in field.errors %}
+                                    <div class="alert alert-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary w-100 py-2">{% trans "Sign Up" %}</button>
                             </div>
-                        {% endfor %}
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">{% trans "Sign Up" %}</button>
-                        </div>
-                </form>
-            {% endif %}
-            {% if SOCIALACCOUNT_ENABLED %}
-                {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-            {% endif %}
+                    </form>
+                {% endif %}
+                {% if SOCIALACCOUNT_ENABLED %}
+                    {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>

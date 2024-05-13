@@ -1,18 +1,23 @@
 {% load allauth socialaccount %}
 {% get_providers as socialaccount_providers %}
 {% if socialaccount_providers %}
-    {% element provider_list %}
-        {% for provider in socialaccount_providers %}
-            {% if provider.id == "openid" %}
-                {% for brand in provider.get_brands %}
-                    {% provider_login_url provider openid=brand.openid_url process=process as href %}
-                    {% element provider name=brand.name provider_id=provider.id href=href %}
-                    {% endelement %}
-                {% endfor %}
-            {% endif %}
-            {% provider_login_url provider process=process scope=scope auth_params=auth_params as href %}
-            {% element provider name=provider.name provider_id=provider.id href=href %}
-            {% endelement %}
-        {% endfor %}
-    {% endelement %}
+    <div class="provider-list">
+        {% element provider_list %}
+            {% for provider in socialaccount_providers %}
+                {% if provider.id == "openid" %}
+                    {% for brand in provider.get_brands %}
+                        {% provider_login_url provider openid=brand.openid_url process=process as href %}
+                        {% element provider name=brand.name provider_id=provider.id href=href %}
+                        {% endelement %}
+                    {% endfor %}
+                {% endif %}
+                {% provider_login_url provider process=process scope=scope auth_params=auth_params as href %}
+                <button class="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" type="button" onclick="window.location.href='{{ href }}'">
+                    Sign up with {{ provider.name }}
+                    {% element provider provider_id=provider.id href=href %}
+                </button>
+                {% endelement %}
+            {% endfor %}
+        {% endelement %}
+    </div>
 {% endif %}
