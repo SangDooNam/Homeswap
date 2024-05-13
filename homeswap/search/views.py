@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from .models import BlogPost
+from blog.models import BlogPost
 
 
 def search_blog_posts(request):
