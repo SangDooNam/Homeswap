@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block content %}
 <div>
 <section id="left-section">
@@ -10,22 +9,132 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    <table class="table table-bordered table-light">
+                    <table class="table table-borderless table-light">
                         {% if profile.profile_photo %}
-                            <tr style="text-align: left;">
-                                <td class="text-center"><img src="{{ profile.profile_photo.url }}" class="img-center img-thumbnail" alt="{{ profile.username }}'s photo"></td>
+                            <tr>
+                                <td class="text-center">
+                                    <img src="{{ profile.profile_photo.url }}" class="img-center img-thumbnail" alt="{{ profile.username }}'s photo">
+                                </td>
                             </tr>
                         {% endif %}
-                        <tr style="text-align: left;"><td><i class="bi bi-person"></i> {{ profile.username }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>First name : {{ profile.first_name }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>Last name : {{ profile.last_name }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>E-mail address : {{ profile.email }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>Phone number : {{ profile.phone_number }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>Street : {{ profile.street }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>Location : {{ profile.location }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>Postal code : {{ profile.postal_code }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>Occupancy limit : {{ profile.max_capacity }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>Biography : {{ profile.biography }}</p><i class="bi bi-pen"></i></td></tr>
+                        <tr>
+                            <td>
+                                <div class="profile-detail">
+                                    <div class="profile-info">
+                                        <strong class="profile-value">{{ profile.username }}</strong>
+                                        <p class="label-text">Username</p>
+                                    </div>
+                                    <i class="bi bi-pen" style="cursor: pointer;"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="profile-detail">
+                                    <div class="profile-info">
+                                        <strong class="profile-value">{{ profile.first_name }}</strong>
+                                        <p class="label-text">First name</p>
+                                    </div>
+                                    <i class="bi bi-pen" style="cursor: pointer;"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="profile-detail">
+                                    <div class="profile-info">
+                                        <strong class="profile-value">{{ profile.last_name }}</strong>
+                                        <p class="label-text">Last name</p>
+                                    </div>
+                                    <i class="bi bi-pen" style="cursor: pointer;"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="profile-detail">
+                                    <div class="profile-info">
+                                        <strong class="profile-value">{{ profile.email }}</strong>
+                                        <p class="label-text">E-mail address</p>
+                                    </div>
+                                    <i class="bi bi-pen" style="cursor: pointer;"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        {% if profile.phone_number %}
+                        <tr>
+                            <td>
+                                <div class="profile-detail">
+                                    <div class="profile-info">
+                                        <strong class="profile-value">{{ profile.phone_number }}</strong>
+                                        <p class="label-text">Phone number</p>
+                                    </div>
+                                    <i class="bi bi-pen" style="cursor: pointer;"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% if profile.street %}
+                        <tr>
+                            <td>
+                                <div class="profile-detail">
+                                    <div class="profile-info">
+                                        <strong class="profile-value">{{ profile.street }}</strong>
+                                        <p class="label-text">Street</p>
+                                    </div>
+                                    <i class="bi bi-pen" style="cursor: pointer;"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% if profile.postal_code %}
+                        <tr>
+                            <td>
+                                <div class="profile-detail">
+                                    <div class="profile-info">
+                                        <strong class="profile-value">{{ profile.postal_code }}</strong>
+                                        <p class="label-text">Postal code</p>
+                                    </div>
+                                    <i class="bi bi-pen" style="cursor: pointer;"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td>
+                                <div class="profile-detail">
+                                    <div class="profile-info">
+                                        <strong class="profile-value">{{ profile.location }}</strong>
+                                        <p class="label-text">Location</p>
+                                    </div>
+                                    <i class="bi bi-pen" style="cursor: pointer;"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="profile-detail">
+                                    <div class="profile-info">
+                                        <strong class="profile-value">{{ profile.max_capacity }}</strong>
+                                        <p class="label-text">Max capacity</p>
+                                    </div>
+                                    <i class="bi bi-pen" style="cursor: pointer;"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        {% if profile.biography %}
+                        <tr>
+                            <td>
+                                <div class="profile-detail">
+                                    <div class="profile-info">
+                                        <strong class="profile-value">{{ profile.biography }}</strong>
+                                        <p class="label-text">Biography</p>
+                                    </div>
+                                    <i class="bi bi-pen" style="cursor: pointer;"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
                     </table>
                 </div>
             </div>

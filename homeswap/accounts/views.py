@@ -15,54 +15,142 @@ from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory
 from django.core.exceptions import PermissionDenied
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
+from django.views.decorators.debug import sensitive_post_parameters
+from django.contrib.sites.shortcuts import get_current_site
+
+from allauth.account.forms import LoginForm, SignupForm
+from allauth import app_settings as allauth_app_settings
+
+from allauth.socialaccount.models import SocialAccount
+from allauth.account import app_settings
+from allauth.account.adapter import get_adapter
+from allauth.account.forms import (
+    AddEmailForm,
+    ChangePasswordForm,
+    ConfirmLoginCodeForm,
+    LoginForm,
+    ReauthenticateForm,
+    RequestLoginCodeForm,
+    ResetPasswordForm,
+    ResetPasswordKeyForm,
+    SetPasswordForm,
+    SignupForm,
+    UserTokenForm,
+)
+from allauth.account.internal import flows
+from allauth.account.mixins import (
+    AjaxCapableProcessFormViewMixin,
+    CloseableSignupMixin,
+    LogoutFunctionalityMixin,
+    NextRedirectMixin,
+    RedirectAuthenticatedUserMixin,
+    _ajax_response,
+)
+from allauth.account.models import (
+    EmailAddress,
+    EmailConfirmation,
+    get_emailconfirmation_model,
+)
+from allauth.account.reauthentication import resume_request
+from allauth.account.utils import (
+    complete_signup,
+    perform_login,
+    send_email_confirmation,
+    sync_user_email_addresses,
+    url_str_to_user_pk,
+    user_display,
+)
+from allauth.core import ratelimit
+from allauth.core.exceptions import ImmediateHttpResponse
+from allauth.core.internal.httpkit import redirect
+from allauth.decorators import rate_limit
+from allauth.utils import get_form_class
+
 from typing import Any
 from .models import AppUser, HomePhoto
 from .forms import RegistrationForm, ProfileForm, HomePhotoForm #HomePhotoFormSet
-import logging
-logger = logging.getLogger(__name__)
 
 
 # Create your views here.
 
-def some_view_before_oauth(request):
-    state = request.session.get('some_state_key', 'No state set')
-    logger.debug(f"State before initiating OAuth: {state}")
+# class HomeView(FormView):
     
-    # Possibly doing some setup or showing a page with a "Login with Facebook" button
-    return render(request, 'main/logging.html')
-
-class HomeView(TemplateView):
+#     template_name = 'home.html'
+#     form_class = LoginForm
     
-    template_name = 'main/home.html'
-    
-
-# class LogInView(LoginView):
-    
-#     form_class = AuthenticationForm
-#     redirect_authenticated_user = True
-#     template_name = 'main/login.html'
-    
-#     def get_success_url(self) -> str:
-#         if self.request.user.is_admin:
-#             return reverse_lazy('admin_dashboard')
-#         return reverse_lazy('user_dashboard')
-    
-#     def dispatch(self, request: HttpRequest, *args: reverse_lazy, **kwargs: reverse_lazy) -> HttpResponse:
-#         if self.redirect_authenticated_user and self.request.user.is_authenticated:
-#             return redirect(self.get_success_url())
+#     def get_context_data(self, **kwargs: reverse_lazy) -> dict[str, Any]:
+#         context = super().get_context_data(**kwargs)
         
-#         return super().dispatch(request, *args, **kwargs)
+#         signup_form = SignupForm
+        
+#         context['signup_form'] = signup_form
+#         return context
 
 
-# class RegistrationView(FormView):
-    
-#     template_name = 'main/registration.html'
-#     success_url = reverse_lazy('accounts:home')
-#     form_class = RegistrationForm
-    
-#     def form_valid(self, form):
-#         form.save()
-#         return super().form_valid(form)
+sensitive_post_parameters_m = method_decorator(
+    sensitive_post_parameters("oldpassword", "password", "password1", "password2")
+)
+
+class HomeView(
+    NextRedirectMixin,
+    RedirectAuthenticatedUserMixin,
+    AjaxCapableProcessFormViewMixin,
+    FormView,
+):
+    form_class = LoginForm
+    template_name = "home.html"
+    success_url = None
+
+    @sensitive_post_parameters_m
+    @method_decorator(never_cache)
+    def dispatch(self, request, *args, **kwargs):
+        if allauth_app_settings.SOCIALACCOUNT_ONLY and request.method != "GET":
+            raise PermissionDenied()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["request"] = self.request
+        return kwargs
+
+    def get_form_class(self):
+        return get_form_class(app_settings.FORMS, "login", self.form_class)
+
+    def form_valid(self, form):
+        redirect_url = self.get_success_url()
+        try:
+            return form.login(self.request, redirect_url=redirect_url)
+        except ImmediateHttpResponse as e:
+            return e.response
+
+    def get_context_data(self, **kwargs):
+        ret = super().get_context_data(**kwargs)
+        signup_url = None
+        if not allauth_app_settings.SOCIALACCOUNT_ONLY:
+            signup_url = self.passthrough_next_url(reverse("account_signup"))
+        site = get_current_site(self.request)
+
+        signup_form = SignupForm
+        
+        ret['signup_form'] = signup_form
+        
+        ret.update(
+            {
+                "signup_url": signup_url,
+                "site": site,
+                "SOCIALACCOUNT_ENABLED": allauth_app_settings.SOCIALACCOUNT_ENABLED,
+                "SOCIALACCOUNT_ONLY": allauth_app_settings.SOCIALACCOUNT_ONLY,
+                "LOGIN_BY_CODE_ENABLED": app_settings.LOGIN_BY_CODE_ENABLED,
+            }
+        )
+        if app_settings.LOGIN_BY_CODE_ENABLED:
+            request_login_code_url = self.passthrough_next_url(
+                reverse("account_request_login_code")
+            )
+            ret["request_login_code_url"] = request_login_code_url
+        return ret
 
 
 def log_out(request):
@@ -160,3 +248,7 @@ def delete_image(request, pk):
     except HomePhoto.DoesNotExist:
         raise HttpResponse("Image not found", status=400)
 
+class PasswordResetView(TemplateView):
+    
+    template_name = 'account/password_reset.html'
+    
