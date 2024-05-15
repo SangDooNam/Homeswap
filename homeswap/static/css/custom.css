@@ -530,3 +530,13 @@ input[type="number"] {
     margin-left: auto; /* Pushes the button to the right */
     margin-bottom: auto;
 }
+
+/* Modal content half transparent */
+.modal-content {
+    background-color: rgba(255, 255, 255, 0.1); /* 50% transparent white */
+}
+
+/* Modal backdrop half transparent */
+.modal-backdrop.show {
+    opacity: 0.5; /* 50% transparent */
+}

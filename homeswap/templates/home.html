@@ -57,8 +57,8 @@
                         </div>
                         <div class="modal-body">
                             {% if not SOCIALACCOUNT_ONLY %}
-                                <p style="color: black;">
-                                    {% blocktranslate %}If you have not created an account yet, then please <a href="#" data-bs-toggle="modal" data-bs-target="#SignupModal">sign up</a> first.{% endblocktranslate %}
+                                <p>
+                                    {% blocktranslate %}If you have not created an account yet, then please <a href="#" data-bs-toggle="modal" data-bs-target="#SignupModal" style="color:lightcyan;">sign up</a> first.{% endblocktranslate %}
                                 </p>
                                 <form method="post" action="{% url 'account_login' %}">
                                     {% csrf_token %}
@@ -72,9 +72,10 @@
                                     {% endfor %}
                                     <div class="form-check text-start my-3">
                                         <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault" name="remember_me">
-                                        <label class="form-check-label" for="flexCheckDefault" style="color: black;">
+                                        <label class="form-check-label" for="flexCheckDefault" >
                                             Remember me
                                         </label>
+                                        <a href="#" style = "margin-left: 200px; color: lightcyan;" data-bs-toggle="modal" data-bs-target="#ResetModal">Forgot your password?</a>
                                     </div>
                                     <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
                                 </form>
@@ -100,7 +101,7 @@
                             <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <p style="color: black;">{% blocktranslate %}Already have an account? Then please <a href="#" data-bs-toggle="modal" data-bs-target="#LoginModal">sign in</a>.{% endblocktranslate %}</p>
+                            <p>{% blocktranslate %}Already have an account? Then please <a href="#" data-bs-toggle="modal" data-bs-target="#LoginModal" style="color:lightcyan;">sign in</a>.{% endblocktranslate %}</p>
                             {% if not SOCIALACCOUNT_ONLY %}
                                 <form method="post" action="{% url 'account_signup' %}" class="form-horizontal">
                                     {% csrf_token %}
@@ -109,7 +110,7 @@
                                                 {{ field|add_class:'form-control' }}
                                                 <label for="{{ field.id_for_label }}" style="color: dimgrey;">{{ field.label }}</label>
                                                 {% if field.help_text %}
-                                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                                                <small class="form-text text-muted" style="color: white !important;">{{ field.help_text }}</small>
                                                 {% endif %}
                                                 {% for error in field.errors %}
                                                 <div class="alert alert-danger">{{ error }}</div>
@@ -138,30 +139,30 @@
                         <div class="modal-body">
                             <div class="provider-list">
                                 {% for provider in socialaccount_providers %}
-                                    <p style="color: black;">
+                                    <p>
                                         {% blocktranslate %}
                                             Already have an account? Then please 
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#LoginModal">sign in</a>.
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#LoginModal" style="color: lightcyan;" >sign in</a>.
                                         {% endblocktranslate %}
                                     </p>
                                     {% if process == "connect" %}
-                                        <h1>
+                                        <h5 >
                                             {% blocktrans with provider.name as provider %}
                                                 Connect {{ provider }}
                                             {% endblocktrans %}
-                                        </h1>
-                                        <p style="color: black;">
+                                        </h5>
+                                        <p>
                                             {% blocktrans with provider.name as provider %}
                                                 You are about to connect a new third-party account from {{ provider }}.
                                             {% endblocktrans %}
                                         </p>
                                     {% else %}
-                                        <h1>
+                                        <h5 >
                                             {% blocktrans with provider.name as provider %}
                                                 Sign In/Up Via {{ provider }}
                                             {% endblocktrans %}
-                                        </h1>
-                                        <p style="color: black;">
+                                        </h5>
+                                        <p>
                                             {% blocktrans with provider.name as provider %}
                                                 You are about to sign in or up using a third-party account from {{ provider }}.
                                             {% endblocktrans %}
@@ -175,6 +176,50 @@
                                     </form>
                                 {% endfor %}
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="ResetModal" class="modal modal-blur fade" aria-hidden="true" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="fw-bold mb-0 fs-2">{% trans "Password Reset" %}</h1>
+                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            {% if user.is_authenticated %}
+                                {% include "account/snippets/already_logged_in.html" %}
+                            {% endif %}
+                            <p>
+                                {% trans "Forgotten your password? Enter your email address below, and we'll send you an email allowing you to reset it." %}
+                            </p>
+                            {% url 'account_reset_password' as reset_url %}
+                            {% element form form=form method="post" action=reset_url %}
+                                {% slot body %}
+                                    {% csrf_token %}
+                                    {% comment %} {% element fields form=reset_password_form %} {% endcomment %}
+                                        {% for field in reset_password_form %}
+                                            <div class="form-floating mb-3">
+                                                {{ field|add_class:'form-control' }}
+                                                <label for="{{ field.id_for_label }}" style="color: dimgrey;">{{ field.label }}</label>
+                                                {% if field.help_text %}
+                                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                                                {% endif %}
+                                                {% for error in field.errors %}
+                                                <div class="alert alert-danger">{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endfor %}
+                                    {% comment %} {% endelement %} {% endcomment %}
+                                {% endslot %}
+                                {% slot actions %}
+                                    <button type="submit" class="btn btn-primary">
+                                        {% trans 'Reset My Password' %}
+                                    </button>
+                                {% endslot %}
+                            {% endelement %}
+                            <p style="margin-top: 10px; margin-left: 5px">{% blocktrans %}Please contact us if you have any trouble resetting your password.{% endblocktrans %}</p>
                         </div>
                     </div>
                 </div>
@@ -260,36 +305,3 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>
 </html>
-
-
-
-{% comment %} <div class="container">
-                <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                    <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
-                </a>
-        
-                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                    <li><a href="{% url 'accounts:home' %}" class="nav-link px-2 text-secondary">Home</a></li> {% endcomment %}
-                    {% comment %} <li><a href="#" class="nav-link px-2 text-secondary">Features</a></li>
-                    <li><a href="#" class="nav-link px-2 text-secondary">Pricing</a></li>
-                    <li><a href="#" class="nav-link px-2 text-wsecondary">FAQs</a></li>
-                    <li><a href="#" class="nav-link px-2 text-secondary">About</a></li> 
-                </ul>{% endcomment %}
-        
-                {% comment %} <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                    <input type="search" class="form-control form-control-dark text-bg-light" placeholder="Search..." aria-label="Search">
-                </form> {% endcomment %}
-        
-                {% comment %} <div class="text-end">
-                    {% if user.is_authenticated %}
-                    <a href="{% url 'accounts:profile' %}" class="btn btn-outline-dark me-2" role="button">Profile</a>
-                    <a href="{% url 'accounts:logout' %}" class="btn btn-warning" role="button">Log out</a>
-                    {% else %}
-                    <a href="/accounts/login/" class="btn btn-outline-dark me-2" role="button">Login</a>
-                    <a href="/accounts/signup/" class="btn btn-warning" role="button">Sign-up</a>
-                    {% endif %}
-                </div>
-                </div>
-            </div> {% endcomment %}
-            {% comment %} <button type="button" class="login-button" data-bs-toggle="modal" data-bs-target="#LoginModal">Login</button> {% endcomment %}

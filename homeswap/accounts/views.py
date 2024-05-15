@@ -136,6 +136,10 @@ class HomeView(
         
         ret['signup_form'] = signup_form
         
+        reset_password_form = ResetPasswordForm
+        
+        ret['reset_password_form'] = reset_password_form
+        
         ret.update(
             {
                 "signup_url": signup_url,
