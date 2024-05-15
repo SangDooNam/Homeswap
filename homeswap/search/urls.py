@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import search_blog_posts
+from .views import search_view
 
 app_name = 'search'
 
 urlpatterns = [
-    path('search-blog-posts/', search_blog_posts, name='search_blog_posts'),
+    path('api/search/', search_view, name='search'),
 ]
