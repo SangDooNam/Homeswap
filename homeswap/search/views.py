@@ -1,11 +1,10 @@
-from rest_framework.response import Response
+from django.shortcuts import render
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from rest_framework import status
 from .serializers import BlogPostSerializer
 from blog.models import BlogPost
 from accounts.models import AppUser
-from rest_framework.permissions import IsAuthenticated
-
 
 @api_view(['GET'])
 def search_view(request):
@@ -27,4 +26,4 @@ def search_view(request):
     )
 
     serializer = BlogPostSerializer(blog_posts, many=True)
-    return Response(serializer.data)
+    return render(request, 'search.html', {'blog_posts': serializer.data})

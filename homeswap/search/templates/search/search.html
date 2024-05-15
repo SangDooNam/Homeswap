@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Search Blog Posts</h1>
-    <form id="searchForm">
+    <form id="searchForm" action="{% url 'search:search' %}" method="GET">
         <label for="search_destination">Destination:</label>
         <input type="text" id="search_destination" name="search_destination" required>
         <br>
@@ -26,13 +26,10 @@
     <div id="searchResults"></div>
 
     <script>
-
         document.getElementById('searchForm').addEventListener('submit', function(event) {
             event.preventDefault(); 
             
-        
             var formData = new FormData(this);
-
 
             fetch('/search/api/search/', {
                 method: 'GET',
@@ -43,7 +40,6 @@
             })
             .then(response => response.json())
             .then(data => {
-
                 var searchResultsDiv = document.getElementById('searchResults');
                 searchResultsDiv.innerHTML = ''; 
 
@@ -55,7 +51,6 @@
 
                         var resultDiv = document.createElement('div');
                         resultDiv.classList.add('search-result'); 
-
 
                         var titleElement = document.createElement('h2');
                         titleElement.textContent = post.title; 
@@ -81,10 +76,7 @@
                         endDateElement.textContent = 'End Date: ' + post.end_date; 
                         resultDiv.appendChild(endDateElement);
 
-
                         resultLink.appendChild(resultDiv);
-
-
                         searchResultsDiv.appendChild(resultLink);
                     });
                 } else {
