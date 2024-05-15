@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post Details</title>
+</head>
+<body>
+    <h1>Blog Post Details</h1>
+
+    <div id="blogPostDetails">
+
+    </div>
+
+    <div id="userPhotos">
+
+    </div>
+
+    <script>
+
+        var postId = window.location.pathname.split('/').pop(); 
+
+        fetch('/search/api/blog/' + postId + '/')
+            .then(response => response.json())
+            .then(data => {
+                var blogPostDetailsDiv = document.getElementById('blogPostDetails');
+
+                var titleElement = document.createElement('h2');
+                titleElement.textContent = data.title; // Display post title
+                blogPostDetailsDiv.appendChild(titleElement);
+
+                var contentElement = document.createElement('p');
+                contentElement.textContent = data.content; // Display post content
+                blogPostDetailsDiv.appendChild(contentElement);
+
+                var locationElement = document.createElement('p');
+                locationElement.textContent = 'Location: ' + data.location; // Display location
+                blogPostDetailsDiv.appendChild(locationElement);
+
+                var toCityElement = document.createElement('p');
+                toCityElement.textContent = 'To City: ' + data.to_city; // Display to_city
+                blogPostDetailsDiv.appendChild(toCityElement);
+
+                var maxCapacityElement = document.createElement('p');
+                maxCapacityElement.textContent = 'Max Capacity: ' + data.max_capacity; // Display max_capacity
+                blogPostDetailsDiv.appendChild(maxCapacityElement);
+
+                var startDateElement = document.createElement('p');
+                startDateElement.textContent = 'Start Date: ' + data.start_date; // Display start date
+                blogPostDetailsDiv.appendChild(startDateElement);
+
+                var endDateElement = document.createElement('p');
+                endDateElement.textContent = 'End Date: ' + data.end_date; 
+                blogPostDetailsDiv.appendChild(endDateElement);
+
+
+            })
+            .catch(error => console.error('Error:', error));
+
+
+        fetch('/search/api/user/photos/')
+            .then(response => response.json())
+            .then(data => {
+                var userPhotosDiv = document.getElementById('userPhotos');
+
+                data.forEach(photo => {
+                    var photoElement = document.createElement('img');
+                    photoElement.src = photo.image_url; 
+                    photoElement.alt = 'User Photo'; 
+                    userPhotosDiv.appendChild(photoElement);
+                });
+            })
+            .catch(error => console.error('Error fetching user photos:', error));
+    </script>
+</body>
+</html>
