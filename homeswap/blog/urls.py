@@ -6,5 +6,5 @@ app_name = 'blog'
 urlpatterns = [
     path('create/', BlogPostView.as_view(), name='create_blog'),
     path('', BlogListView.as_view(), name='home'),
-    path('details/<int:post_id>/', blog_post_details, name='blog_post_details'), 
+    path('details/<int:post_id>/', blog_post_details, name='blog_post_details'),
 ]
