@@ -31,12 +31,11 @@
             
             var formData = new FormData(this);
 
-            fetch('/search/api/search/', {
+            fetch('/search/api/search/?' + new URLSearchParams(formData), {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json'
-                },
-                body: formData
+                }
             })
             .then(response => response.json())
             .then(data => {
@@ -46,7 +45,7 @@
                 if (data.length > 0) {
                     data.forEach(post => {
                         var resultLink = document.createElement('a');
-                        resultLink.href = '/blog/details/' + post.id + '/'; // Redirect to blog post details page
+                        resultLink.href = '/blog/details/' + post.id + '/'; 
                         resultLink.target = '_blank'; 
 
                         var resultDiv = document.createElement('div');
