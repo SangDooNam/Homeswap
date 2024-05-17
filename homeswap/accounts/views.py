@@ -23,7 +23,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from allauth.account.forms import LoginForm, SignupForm
 from allauth import app_settings as allauth_app_settings
 
-from allauth.socialaccount.models import SocialAccount
 from allauth.account import app_settings
 from allauth.account.adapter import get_adapter
 from allauth.account.forms import (
@@ -71,22 +70,6 @@ from allauth.utils import get_form_class
 from typing import Any
 from .models import AppUser, HomePhoto
 from .forms import RegistrationForm, ProfileForm, HomePhotoForm #HomePhotoFormSet
-
-
-# Create your views here.
-
-# class HomeView(FormView):
-    
-#     template_name = 'home.html'
-#     form_class = LoginForm
-    
-#     def get_context_data(self, **kwargs: reverse_lazy) -> dict[str, Any]:
-#         context = super().get_context_data(**kwargs)
-        
-#         signup_form = SignupForm
-        
-#         context['signup_form'] = signup_form
-#         return context
 
 
 sensitive_post_parameters_m = method_decorator(
@@ -168,7 +151,7 @@ class ProfileView(DetailView):
     template_name = 'main/profile.html'
     context_object_name = 'profile'
     success_url = reverse_lazy('accounts:profile')
-    
+
     def get_form_class(self):
         if not self.request.user.is_authenticated:
             raise PermissionDenied("You must be logged in to upload photos.")
@@ -210,15 +193,13 @@ class ProfileView(DetailView):
                 instance.user = request.user
                 instance.save()
             formset.save()
-            #print('Formset saved successfully.')
+
             return HttpResponseRedirect(self.success_url)
         else:
-            #print('Formset is invalid:', formset.errors)
             return self.form_invalid(formset)
     
     def form_invalid(self, formset):
-        context = self.get_context_data(form=formset)
-        return self.render_to_response(context)
+        return HttpResponseRedirect(self.success_url)
 
 
 class ProfileEditView(UpdateView):
@@ -227,19 +208,41 @@ class ProfileEditView(UpdateView):
     template_name = "main/edit_profile.html"
     success_url = reverse_lazy('accounts:profile')
     
+    def dispatch(self, request: HttpRequest, *args: reverse_lazy, **kwargs: reverse_lazy) -> HttpResponse:
+        self.form_name = kwargs.get('form_name')
+        return super().dispatch(request, *args, **kwargs)
+    
     def get_object(self, queryset: QuerySet[reverse_lazy] | None = ...) -> Model:
-        try:
-            if self.request.user.is_authenticated:
-                return self.request.user
-        except self.request.user.DoesNotExist as error:
-            raise error
-        
-        
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
         if self.request.user.is_authenticated:
+            return self.request.user
+        else:
+            raise PermissionDenied("You must be logged in to edit your profile.")
+    
+    def get_context_data(self, **kwargs: reverse_lazy) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        initial_data = {self.form_name: getattr(self.request.user, self.form_name, '')}
+        context['form'] = self.form_class(instance=self.get_object(), field_name=self.form_name, initial=initial_data)
+        context['form_name'] = self.form_name
+        return context
+    
+    def get_form(self, form_class=None):
+        form_class = self.get_form_class()
+        kwargs = self.get_form_kwargs()
+        initial_data = {self.form_name: getattr(self.request.user, self.form_name, '')}
+        kwargs['initial'] = initial_data
+        kwargs['field_name'] = self.form_name
+        form = form_class(**kwargs)
+        return form
+    
+    def form_valid(self, form):
+        if self.request.user.is_authenticated:
+            form.save()
             return super().form_valid(form)
         else:
-            return super().form_invalid(form)
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        return super().form_invalid(form)
 
 
 def delete_image(request, pk):
@@ -252,7 +255,8 @@ def delete_image(request, pk):
     except HomePhoto.DoesNotExist:
         raise HttpResponse("Image not found", status=400)
 
-class PasswordResetView(TemplateView):
     
-    template_name = 'account/password_reset.html'
+
+class DummyView(TemplateView):
     
+    template_name = "partials/profile_photo.html"

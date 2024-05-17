@@ -43,9 +43,9 @@
             <div class="row justify-content-center">
                 <div class="col-md-9">
                     <table class="table table-bordered table-light">
-                        <p>You can upload a maximum 10 Photos. {{ left_amount }} remaining.</p>
+                        <p style="color: black;">You can upload a maximum 10 Photos. {{ left_amount }} remaining.</p>
                         {% if form.forms.0.photo_type.help_text %}
-                            <div class="mb-2">
+                            <div class="mb-2" style="text-align: right; margin-right: 180px;">
                                 <small class="form-text text-muted">{{ form.forms.0.photo_type.help_text }}</small>
                             </div>
                         {% endif %}

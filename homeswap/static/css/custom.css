@@ -503,16 +503,17 @@ input[type="number"] {
 .profile-detail {
     display: flex; 
     justify-content: space-between; 
-    align-items: left;
+    align-items: center;
     text-align: left;
     width: 100%; /* Ensures full width and consistent alignment */
 }
 .profile-info {
-    width: 90%; /* Adjust this value based on your specific layout needs */
+    width: 100%; /* Adjust this value based on your specific layout needs */
 }
 .profile-value {
      /* Example color, change as needed */
-    display: block;
+    color: dimgrey;
+
 }
 .label-text {
     font-size: small; 
@@ -539,4 +540,42 @@ input[type="number"] {
 /* Modal backdrop half transparent */
 .modal-backdrop.show {
     opacity: 0.5; /* 50% transparent */
+}
+
+.small-icon {
+    color: dimgrey;
+    cursor: pointer;
+    font-size: 12px; /* Adjust the size as needed */
+}
+
+.gutter-content {
+    border-radius: 8px;
+    background-color: white;
+    width: 48%;
+    margin: 7px;
+    margin-right: 16px;
+    margin-left: 0px;
+}
+
+.gutter-content-2 {
+    border-radius: 8px;
+    background-color: white;
+    width: 31%;
+    margin: 7px;
+    margin-right: 19.42px;
+    margin-left: 0px;
+}
+
+.gutter-content-biography {
+    border-radius: 8px;
+    background-color: white;
+    width: 98%;
+    margin: 7px;
+    margin-right: 10px;
+    margin-left: 0px;
+}
+
+.btn-custom {
+    padding: 2px 5px; /* Adjust padding to change button size */
+    font-size: 16px; /* Adjust font size */
 }

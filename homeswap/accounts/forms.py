@@ -66,27 +66,29 @@ class ProfileForm(forms.ModelForm):
     
     class Meta:
         model = AppUser
-        fields = [
-            'username',
-            'first_name',
-            'last_name',
-            'email',
-            'phone_number',
-            'street',
-            'location',
-            'postal_code',
-            'biography',
-            'max_capacity',
-            'profile_photo',
-        ]
+        fields = []
         labels = {
             'profile_photo': '',
         }
         widgets = {
             'postal_code': forms.NumberInput(attrs={'class': 'no-spinners'}),
         }
+    
+    def __init__(self, *args, **kwargs):
         
-        
+        self.field_name = kwargs.pop('field_name', None)
+        super(ProfileForm, self).__init__(*args, **kwargs)
+        if self.field_name:
+            self.fields[self.field_name] = self.Meta.model._meta.get_field(self.field_name).formfield()
+            
+    def save(self, commit=True):
+        instance = super(ProfileForm, self).save(commit=False)
+        if self.cleaned_data.get(self.field_name):
+            setattr(instance, self.field_name, self.cleaned_data[self.field_name])
+        if commit:
+            instance.save()
+        return instance
+
 class HomePhotoForm(forms.ModelForm):
     
     class Meta:

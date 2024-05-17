@@ -1,1 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
 <img src="{{ user.profile_photo.url }}" alt="{{ user.username }}'s photo">
+
+
+<a href="#" hx-get="{% url 'accounts:profile_edit' %}" hx-target="#edit-firstname">
+    link
+</a>
+
+{% endblock %}

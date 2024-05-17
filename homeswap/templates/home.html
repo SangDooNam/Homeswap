@@ -31,12 +31,12 @@
     </head>
     <body id='refresh'>
         <header class="p-3 mb-3 border-bottom">
-            <img src="{% static 'img/homeswap.png' %}" alt="">
+            <img src="{% static 'img/homeswap.png' %}" alt="" style="margin-left: 20px;">
             {% if user.is_authenticated %}
             {% else %}
                 <nav>
                     <ul>
-                        <li><a href="#home">Home</a></li><hr>
+                        <li><a href="{% url 'accounts:home' %}">Home</a></li><hr>
                         <li><a href="#hdiw">How does it work?</a></li><hr>
                         <li><a href="#clients">Client Testimonials</a></li><hr>
                         <li><a href="#contact">Contact Us</a></li>
@@ -195,8 +195,8 @@
                                 {% trans "Forgotten your password? Enter your email address below, and we'll send you an email allowing you to reset it." %}
                             </p>
                             {% url 'account_reset_password' as reset_url %}
-                            {% element form form=form method="post" action=reset_url %}
-                                {% slot body %}
+                            {% comment %} {% element form form=reset_password_form method="post" action=reset_url %} {% endcomment %}
+                                {% comment %} {% slot body %} {% endcomment %}
                                     {% csrf_token %}
                                     {% comment %} {% element fields form=reset_password_form %} {% endcomment %}
                                         {% for field in reset_password_form %}
@@ -212,14 +212,32 @@
                                             </div>
                                         {% endfor %}
                                     {% comment %} {% endelement %} {% endcomment %}
-                                {% endslot %}
-                                {% slot actions %}
-                                    <button type="submit" class="btn btn-primary">
+                                {% comment %} {% endslot %} {% endcomment %}
+                                {% comment %} {% slot actions %} {% endcomment %}
+                                    <button type="submit" data-bs-toggle="modal" data-bs-target="#ResetDoneModal" class="btn btn-primary">
                                         {% trans 'Reset My Password' %}
                                     </button>
-                                {% endslot %}
-                            {% endelement %}
+                                {% comment %} {% endslot %} {% endcomment %}
+                            {% comment %} {% endelement %} {% endcomment %}
                             <p style="margin-top: 10px; margin-left: 5px">{% blocktrans %}Please contact us if you have any trouble resetting your password.{% endblocktrans %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="ResetDoneModal" class="modal modal-blur fade" aria-hidden="true" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="fw-bold mb-0 fs-2">{% trans "Password Reset" %}</h1>
+                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            {% if user.is_authenticated %}
+                            {% include "account/snippets/already_logged_in.html" %}
+                            {% endif %}
+                            <p>
+                                {% blocktrans %}We have sent you an email. If you have not received it please check your spam folder. Otherwise contact us if you do not receive it in a few minutes.{% endblocktrans %}
+                            </p>
                         </div>
                     </div>
                 </div>

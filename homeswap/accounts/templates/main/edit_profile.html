@@ -1,22 +1,18 @@
-{% extends "base.html" %}
 {% load account_tag %}
-{% block content %}
-<div>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-5">
-                <form method="post" enctype="multipart/form-data"> 
-                    {% csrf_token %}
-                        {% for field in form %}
-                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                            <div class="mb-3">
-                                {{ field|add_class:'form-control' }}
-                            </div>
-                        {% endfor %}
-                    <button class="btn btn-primary" type="submit">Submit</button>
-                </form>
+
+<form method="post" enctype="multipart/form-data" hx-post="{% url 'accounts:profile_edit' form_name=form_name %}" hx-target="#refresh"> 
+    {% csrf_token %}
+        {% for field in form %}
+            <div class="row" style="margin-top: 2px;">
+                <div class="col-sm-8">
+                    <strong>{{ field|add_class:'form-control' }}</strong>
+                </div>
+                <div class="col-sm-4 d-flex justify-content-end align-items-center">
+                    <button class="btn btn-info btn-custom me-2" type="submit">Submit</button>
+                    {% comment %} <a href="{% url 'accounts:profile' %}?status=submitted" class="btn btn-info btn-custom me-2" role="button" type="submit">Submit</a> {% endcomment %}
+                    <a href="{% url 'accounts:profile' %}" class="btn btn-dark btn-custom" role="button">Cancel</a>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
+        {% endfor %}
+</form>
+
