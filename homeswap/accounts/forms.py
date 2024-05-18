@@ -81,6 +81,20 @@ class ProfileForm(forms.ModelForm):
         if self.field_name:
             self.fields[self.field_name] = self.Meta.model._meta.get_field(self.field_name).formfield()
             
+    def clean(self):
+        cleaned_data = super().clean()
+        field_value = cleaned_data.get(self.field_name)
+        
+        if self.field_name == 'max_capacity' and field_value is not None:
+            if field_value < 1:
+                self.add_error(self.field_name, "Max capacity must be at least 1.")
+            elif field_value > 10:
+                self.add_error(self.field_name, "Max capacity cannot exceed 10.")
+                
+        print('print errors from forms.py',self.errors)
+        
+        return cleaned_data
+            
     def save(self, commit=True):
         instance = super(ProfileForm, self).save(commit=False)
         if self.cleaned_data.get(self.field_name):

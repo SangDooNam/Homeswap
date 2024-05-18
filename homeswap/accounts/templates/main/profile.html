@@ -16,242 +16,80 @@
                         {% endif %}
                         <div class="container">
                             <div class="row g-3" style="margin-top: 10px;">
-                                {% if profile.first_name %}
                                 <div class="col-sm-5 gutter-content">
-                                    <div class="profile-detail" id="edit-firstname" hx-swap="outerHTML">
-                                        <div>
-                                            <strong class="profile-value">{{ profile.first_name }}</strong>
-                                            <p class="label-text">First name</p>
-                                        </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='first_name' %}" hx-target="#edit-firstname">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
+                                {% include 'partials/first_name.html' %}
                                 </div>
-                                {% else %}
                                 <div class="col-sm-5 gutter-content">
-                                    <div class="profile-detail" id="edit-firstname" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">First name</strong>
-                                            <p class="label-text" style="color:indianred;">Please enter your first name.</p>
-                                        </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='first_name' %}" hx-target="#edit-firstname">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
+                                {% include 'partials/last_name.html' %}
                                 </div>
-                                {% endif %}
-                        
-                                {% if profile.last_name %}
-                                <div class="col-sm-5 gutter-content">
-                                    <div class="profile-detail" id="edit-lastname" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">{{ profile.last_name }}</strong>
-                                            <p class="label-text">Last name</p>
+                                {% if error and form_name %}
+                                    {% if form_name == 'first_name' or form_name == 'last_name' %}
+                                        <div class="alert alert-danger custom-alert">
+                                            {{ error }}
+                                            <button type="button" class="btn-close custom-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                         </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='last_name' %}" hx-target="#edit-lastname">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                {% else %}
-                                <div class="col-sm-5 gutter-content">
-                                    <div class="profile-detail" id="edit-lastname" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">Last name</strong>
-                                            <p class="label-text" style="color:indianred;">Please enter your last name.</p>
-                                        </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='last_name' %}" hx-target="#edit-lastname">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
-                                </div>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                             <div class="row g-3" style="margin-top: 10px;">
-                                {% if profile.email %}
-                                <div class="col-12 gutter-content">
-                                    <div class="profile-detail" id="edit-email" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">{{ profile.email }}</strong>
-                                            <p class="label-text">E-mail address</p>
-                                        </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='email' %}" hx-target="#edit-email">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
+                                <div class="col-sm-5 gutter-content">
+                                {% include 'partials/email.html' %}
                                 </div>
-                                {% else %}
-                                <div class="col-12 gutter-content">
-                                    <div class="profile-detail" id="edit-email" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">E-mail address</strong>
-                                            <p class="label-text" style="color:indianred;">Please enter your email.</p>
-                                        </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='email' %}" hx-target="#edit-email">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
+                                <div class="col-sm-5 gutter-content">
+                                {% include 'partials/phone_number.html' %}
                                 </div>
-                                {% endif %}
-                            
-                                {% if profile.phone_number %}
-                                <div class="col-12 gutter-content">
-                                    <div class="profile-detail" id="edit-phonenumber" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">{{ profile.phone_number }}</strong>
-                                            <p class="label-text">Phone number</p>
+                                {% if error %}
+                                    {% if form_name == 'email' or form_name == 'phone_number' %}
+                                        <div class="alert alert-danger custom-alert">
+                                            {{ error }}
+                                            <button type="button" class="btn-close custom-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                         </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='phone_number' %}" hx-target="#edit-phonenumber">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                {% else %}
-                                <div class="col-12 gutter-content">
-                                    <div class="profile-detail" id="edit-phonenumber" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">Phone number</strong>
-                                            <p class="label-text" style="color:indianred;">Please enter your phone number.</p>
-                                        </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='phone_number' %}" hx-target="#edit-phonenumber">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
-                                </div>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                             <div class="row g-3" style="margin-top: 10px;">
-                                {% if profile.max_capacity %}
-                                <div class="col-12 gutter-content">
-                                    <div class="profile-detail" id="edit-max-capacity" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">{{ profile.max_capacity }}</strong>
-                                            <p class="label-text">Max capacity of your home</p>
-                                        </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='max_capacity' %}" hx-target="#edit-max-capacity">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
+                                <div class="col-sm-5 gutter-content">
+                                {% include 'partials/max_capacity.html' %}
                                 </div>
-                                {% else %}
-                                <div class="col-12 gutter-content">
-                                    <div class="profile-detail" id="edit-max-capacity" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">Max capacity</strong>
-                                            <p class="label-text" style="color:indianred;">Please enter the max capacity of your home.</p>
-                                        </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='max_capacity' %}" hx-target="#edit-max-capacity">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
+                                <div class="col-sm-5 gutter-content">
+                                {% include 'partials/street.html' %}
                                 </div>
-                                {% endif %}
-                            
-                                {% if profile.street %}
-                                <div class="col-12 gutter-content">
-                                    <div class="profile-detail" id="edit-street" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">{{ profile.street }}</strong>
-                                            <p class="label-text">Street</p>
+                                {% if error %}
+                                    {% if form_name == 'max_capacity' or form_name == 'street' %}
+                                        <div class="alert alert-danger custom-alert">
+                                            {{ error }}
+                                            <button type="button" class="btn-close custom-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                         </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='street' %}" hx-target="#edit-street">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                {% else %}
-                                <div class="col-12 gutter-content">
-                                    <div class="profile-detail" id="edit-street" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">Street</strong>
-                                            <p class="label-text" style="color:indianred;">Please enter your street.</p>
-                                        </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='street' %}" hx-target="#edit-street">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
-                                </div>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                             <div class="row g-3" style="margin-top: 10px;">
-                                {% if profile.postal_code %}
-                                <div class="col-12 gutter-content">
-                                    <div class="profile-detail" id="edit-postal-code" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">{{ profile.postal_code }}</strong>
-                                            <p class="label-text">Postal code</p>
-                                        </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='postal_code' %}" hx-target="#edit-postal-code">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
+                                <div class="col-sm-5 gutter-content">
+                                {% include 'partials/postal_code.html' %}
                                 </div>
-                                {% else %}
-                                <div class="col-12 gutter-content">
-                                    <div class="profile-detail" id="edit-postal-code" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">Zip code</strong>
-                                            <p class="label-text" style="color:indianred;">Please enter your zip code.</p>
-                                        </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='postal_code' %}" hx-target="#edit-postal-code">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
+                                <div class="col-sm-5 gutter-content">
+                                {% include 'partials/location.html' %}
                                 </div>
-                                {% endif %}
-                        
-                                {% if profile.location %}
-                                <div class="col-12 gutter-content">
-                                    <div class="profile-detail" id="edit-location" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">{{ profile.location }}</strong>
-                                            <p class="label-text">Location</p>
+                                {% if error %}
+                                    {% if form_name == 'postal_code' or form_name == 'location' %}
+                                        <div class="alert alert-danger custom-alert">
+                                            {{ error }}
+                                            <button type="button" class="btn-close custom-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                         </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='location' %}" hx-target="#edit-location">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                {% else %}
-                                <div class="col-12 gutter-content">
-                                    <div class="profile-detail" id="edit-location" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">Location</strong>
-                                            <p class="label-text" style="color:indianred;">Please enter your location.</p>
-                                        </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='location' %}" hx-target="#edit-location">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
-                                </div>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                             <div class="row g-3" style="margin-top: 10px;">
-                                {% if profile.biography %}
                                 <div class="col-12 gutter-content-biography">
-                                    <div class="profile-detail" id="edit-biography" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">{{ profile.biography }}</strong>
-                                            <p class="label-text">Biography</p>
-                                        </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='biography' %}" hx-target="#edit-biography">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
+                                {% include 'partials/biography.html' %}
                                 </div>
-                                {% else %}
-                                <div class="col-12 gutter-content-biography">
-                                    <div class="profile-detail" id="edit-biography" hx-swap="outerHTML">
-                                        <div class="profile-info">
-                                            <strong class="profile-value">Biography</strong>
-                                            <p class="label-text" style="color:indianred;">Please enter your biography.</p>
+                                {% if error %}
+                                    {% if form_name == 'biography' %}
+                                        <div class="alert alert-danger custom-alert">
+                                            {{ error }}
+                                            <button type="button" class="btn-close custom-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                         </div>
-                                        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='biography' %}" hx-target="#edit-biography">
-                                            <i class="bi bi-pen small-icon"></i>
-                                        </a>
-                                    </div>
-                                </div>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>
@@ -259,7 +97,6 @@
             </div>
         </div>
         <br>
-        {% comment %} <a href="{% url 'accounts:profile_edit' %}" class="btn btn-primary" role="button">Edit Profile</a> {% endcomment %}
     </div>
     <div>
         {% include "partials/image_upload.html" %}

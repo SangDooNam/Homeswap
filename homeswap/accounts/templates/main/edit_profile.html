@@ -1,7 +1,7 @@
 {% load account_tag %}
-
-<form method="post" enctype="multipart/form-data" hx-post="{% url 'accounts:profile_edit' form_name=form_name %}" hx-target="#refresh"> 
-    {% csrf_token %}
+<div id="{{ id }}" class="profile-detail">
+    <form method="post" enctype="multipart/form-data" hx-post="{% url 'accounts:profile_edit' form_name=form_name %}" hx-target="#refresh">
+        {% csrf_token %}
         {% for field in form %}
             <div class="row" style="margin-top: 2px;">
                 <div class="col-sm-8">
@@ -9,10 +9,12 @@
                 </div>
                 <div class="col-sm-4 d-flex justify-content-end align-items-center">
                     <button class="btn btn-info btn-custom me-2" type="submit">Submit</button>
-                    {% comment %} <a href="{% url 'accounts:profile' %}?status=submitted" class="btn btn-info btn-custom me-2" role="button" type="submit">Submit</a> {% endcomment %}
-                    <a href="{% url 'accounts:profile' %}" class="btn btn-dark btn-custom" role="button">Cancel</a>
+                    <a href="#" hx-get="{% url 'accounts:profile_detail' form_name=form_name %}" hx-target="{{ hx_target }}" class="btn btn-dark btn-custom" role="button">Cancel</a>
                 </div>
             </div>
+            {% if error %}
+                <div class="alert alert-danger" style="color: black;">{{ error }}</div>
+            {% endif %}
         {% endfor %}
-</form>
-
+    </form>
+</div>

@@ -501,12 +501,14 @@ input[type="number"] {
 }
 
 .profile-detail {
-    display: flex; 
+    /* display: flex;  */
+    position: relative;
     justify-content: space-between; 
     align-items: center;
     text-align: left;
     width: 100%; /* Ensures full width and consistent alignment */
 }
+
 .profile-info {
     width: 100%; /* Adjust this value based on your specific layout needs */
 }
@@ -543,6 +545,10 @@ input[type="number"] {
 }
 
 .small-icon {
+    position: absolute;
+    top: 50%;
+    right: 0; /* Keep it aligned to the right */
+    transform: translateY(-50%);
     color: dimgrey;
     cursor: pointer;
     font-size: 12px; /* Adjust the size as needed */
@@ -552,7 +558,7 @@ input[type="number"] {
     border-radius: 8px;
     background-color: white;
     width: 48%;
-    margin: 7px;
+    /* margin: 7px; */
     margin-right: 16px;
     margin-left: 0px;
 }
@@ -578,4 +584,22 @@ input[type="number"] {
 .btn-custom {
     padding: 2px 5px; /* Adjust padding to change button size */
     font-size: 16px; /* Adjust font size */
+}
+
+.errorlist {
+    text-align: left;
+}
+
+.custom-alert {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 600px;  /* Adjust the max-width as needed */
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 0px;
+}
+
+.custom-close {
+    margin-left: auto;  /* Push the close button to the right */
 }

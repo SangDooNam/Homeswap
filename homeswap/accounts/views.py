@@ -71,6 +71,12 @@ from typing import Any
 from .models import AppUser, HomePhoto
 from .forms import RegistrationForm, ProfileForm, HomePhotoForm #HomePhotoFormSet
 
+from bs4 import BeautifulSoup
+import re
+
+def extract_error_message(errors):
+    soup = BeautifulSoup(errors.as_ul(), "html.parser")
+    return soup.get_text()
 
 sensitive_post_parameters_m = method_decorator(
     sensitive_post_parameters("oldpassword", "password", "password1", "password2")
@@ -151,6 +157,11 @@ class ProfileView(DetailView):
     template_name = 'main/profile.html'
     context_object_name = 'profile'
     success_url = reverse_lazy('accounts:profile')
+    
+    def dispatch(self, request: HttpRequest, *args: reverse_lazy, **kwargs: reverse_lazy) -> HttpResponse:
+        self.form_name = self.request.session.get('form_name', None)
+        
+        return super().dispatch(request, *args, **kwargs)
 
     def get_form_class(self):
         if not self.request.user.is_authenticated:
@@ -176,10 +187,14 @@ class ProfileView(DetailView):
         if 'form' not in context:
             context['form'] = FormClass(queryset=HomePhoto.objects.none())
         
+        self.form_name = self.request.session.get('form_name', None)
+        
+        
         photos = HomePhoto.objects.filter(user=self.request.user)
         context['photos'] = photos
         context['extra_num'] = self.extra_forms
         context['left_amount'] = self.left_amount
+        context['form_name'] = self.form_name
         
         return context
     
@@ -210,6 +225,7 @@ class ProfileEditView(UpdateView):
     
     def dispatch(self, request: HttpRequest, *args: reverse_lazy, **kwargs: reverse_lazy) -> HttpResponse:
         self.form_name = kwargs.get('form_name')
+        self.request.session['form_name'] = self.form_name
         return super().dispatch(request, *args, **kwargs)
     
     def get_object(self, queryset: QuerySet[reverse_lazy] | None = ...) -> Model:
@@ -221,8 +237,14 @@ class ProfileEditView(UpdateView):
     def get_context_data(self, **kwargs: reverse_lazy) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         initial_data = {self.form_name: getattr(self.request.user, self.form_name, '')}
+        
+        id = 'id-' + self.form_name
+        hx_target = '#' + id
+        
         context['form'] = self.form_class(instance=self.get_object(), field_name=self.form_name, initial=initial_data)
         context['form_name'] = self.form_name
+        context['id'] = id
+        context['hx_target'] = hx_target
         return context
     
     def get_form(self, form_class=None):
@@ -242,7 +264,21 @@ class ProfileEditView(UpdateView):
             return self.form_invalid(form)
 
     def form_invalid(self, form):
-        return super().form_invalid(form)
+        context = self.get_context_data(form=form)
+        profile_view = ProfileView()
+        profile_view.request = self.request
+        profile_view.object = self.get_object()
+        profile_context = profile_view.get_context_data()
+        context.update(profile_context)
+        
+        extracted_errors = extract_error_message(form.errors)
+        if self.form_name in extracted_errors:
+            extracted_errors = re.sub(rf'^{self.form_name}', '', extracted_errors)
+        
+        context['error'] = extracted_errors
+        context['form_name'] = self.form_name
+        
+        return render(self.request, 'main/profile.html', context)
 
 
 def delete_image(request, pk):
@@ -255,8 +291,62 @@ def delete_image(request, pk):
     except HomePhoto.DoesNotExist:
         raise HttpResponse("Image not found", status=400)
 
-    
 
-class DummyView(TemplateView):
+class ProfileDetailsFactory(TemplateView):
     
-    template_name = "partials/profile_photo.html"
+    def dispatch(self, request: HttpRequest, *args: reverse_lazy, **kwargs: reverse_lazy) -> HttpResponse:
+        self.form_name = kwargs.get('form_name')
+        
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_template_names(self) -> list[str]:
+        
+        if self.form_name and self.form_name == 'first_name':
+            
+            template = 'partials/first_name.html'
+        
+        elif self.form_name and self.form_name == 'last_name':
+            
+            template = 'partials/last_name.html'
+        
+        elif self.form_name and self.form_name == 'email':
+            
+            template ='partials/email.html'
+        
+        elif self.form_name and self.form_name == 'phone_number':
+            
+            template = 'partials/phone_number.html'
+        
+        elif self.form_name and self.form_name == 'max_capacity':
+            
+            template = 'partials/max_capacity.html'
+        
+        elif self.form_name and self.form_name == 'street':
+            
+            template = 'partials/street.html'
+        
+        elif self.form_name and self.form_name == 'postal_code':
+            
+            template = 'partials/postal_code.html'
+        
+        elif self.form_name and self.form_name == 'location':
+            
+            template = 'partials/location.html'
+        
+        elif self.form_name and self.form_name == 'biography':
+            
+            template = 'partials/biography.html'
+        
+        return template
+    
+    
+    def get_context_data(self, **kwargs: reverse_lazy) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        
+        profile_view = ProfileView()
+        profile_view.request = self.request
+        profile_view.object = self.request.user
+        profile_context = profile_view.get_context_data()
+        context.update(profile_context)
+
+        return context
