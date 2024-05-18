@@ -21,7 +21,7 @@
                     <p>
                         {% blocktranslate %}If you have not created an account yet, then please <a href="{{ signup_url }}">sign up</a> first.{% endblocktranslate %}
                     </p>
-                    <form method="post" action="{% url 'account_login' %}">
+                    <form method="post" action="{% url 'accounts:sign_up' %}">
                         {% csrf_token %}
                                 {% for field in form %}
                                     {% if field.name != "remember" %}
@@ -53,7 +53,6 @@
         </div>
     </div>
 </div>
-<a href="{% url 'accounts:reset' %}">reset</a>
 {% endblock %}
 
 

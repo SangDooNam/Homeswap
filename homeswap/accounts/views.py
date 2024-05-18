@@ -1,4 +1,4 @@
-from django.forms import BaseModelForm
+from django.forms import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models.base import Model as Model
 from django.db.models.query import QuerySet, Q
@@ -14,6 +14,7 @@ from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory
 from django.core.exceptions import PermissionDenied
+from django.core.validators import validate_email
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
@@ -82,56 +83,80 @@ sensitive_post_parameters_m = method_decorator(
     sensitive_post_parameters("oldpassword", "password", "password1", "password2")
 )
 
+@method_decorator(rate_limit(action="signup"), name="dispatch")
 class HomeView(
-    NextRedirectMixin,
     RedirectAuthenticatedUserMixin,
+    CloseableSignupMixin,
+    NextRedirectMixin,
     AjaxCapableProcessFormViewMixin,
     FormView,
-):
-    form_class = LoginForm
+    ):
     template_name = "home.html"
-    success_url = None
+    form_class = LoginForm  # Default to LoginForm
+    signup_form_class = SignupForm
 
     @sensitive_post_parameters_m
     @method_decorator(never_cache)
     def dispatch(self, request, *args, **kwargs):
-        if allauth_app_settings.SOCIALACCOUNT_ONLY and request.method != "GET":
-            raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["request"] = self.request
-        return kwargs
-
-    def get_form_class(self):
-        return get_form_class(app_settings.FORMS, "login", self.form_class)
+    # def get_form_class(self):
+    #     print(self.request.POST)
+    #     if 'signup' in self.request.POST:
+    #         return self.signup_form_class
+    #     elif 'signin' in self.request.POST:
+    #         return self.form_class
+    #     else:
+    #         return self.form_class
 
     def form_valid(self, form):
-        redirect_url = self.get_success_url()
-        try:
-            return form.login(self.request, redirect_url=redirect_url)
-        except ImmediateHttpResponse as e:
-            return e.response
+        if isinstance(form, self.signup_form_class):
+            self.user, resp = form.try_save(self.request)
+            if resp:
+                return resp
+            try:
+                redirect_url = self.get_success_url()
+                return complete_signup(
+                    self.request,
+                    self.user,
+                    email_verification=None,
+                    success_url=redirect_url,
+                )
+            except ImmediateHttpResponse as e:
+                return e.response
+        else:
+            redirect_url = self.get_success_url()
+            try:
+                return form.login(self.request, redirect_url=redirect_url)
+            except ImmediateHttpResponse as e:
+                return e.response
 
     def get_context_data(self, **kwargs):
         ret = super().get_context_data(**kwargs)
+        form = ret["form"]
+        print(ret)
+        email = self.request.session.get("account_verified_email")
+        if email:
+            email_keys = ["email"]
+            if app_settings.SIGNUP_EMAIL_ENTER_TWICE:
+                email_keys.append("email2")
+            for email_key in email_keys:
+                form.fields[email_key].initial = email
         signup_url = None
         if not allauth_app_settings.SOCIALACCOUNT_ONLY:
             signup_url = self.passthrough_next_url(reverse("account_signup"))
+        login_url = self.passthrough_next_url(reverse("account_login"))
         site = get_current_site(self.request)
 
-        signup_form = SignupForm
-        
-        ret['signup_form'] = signup_form
-        
-        reset_password_form = ResetPasswordForm
-        
-        ret['reset_password_form'] = reset_password_form
-        
+        signup_form = SignupForm()
+        reset_password_form = ResetPasswordForm()
+
         ret.update(
             {
+                'signup_form': signup_form,
+                'reset_password_form': reset_password_form,
                 "signup_url": signup_url,
+                "login_url": login_url,
                 "site": site,
                 "SOCIALACCOUNT_ENABLED": allauth_app_settings.SOCIALACCOUNT_ENABLED,
                 "SOCIALACCOUNT_ONLY": allauth_app_settings.SOCIALACCOUNT_ONLY,
@@ -144,6 +169,50 @@ class HomeView(
             )
             ret["request_login_code_url"] = request_login_code_url
         return ret
+
+    def get_initial(self):
+        initial = super().get_initial()
+        email = self.request.GET.get("email")
+        if email:
+            try:
+                validate_email(email)
+            except ValidationError:
+                return initial
+            initial["email"] = email
+            if app_settings.SIGNUP_EMAIL_ENTER_TWICE:
+                initial["email2"] = email
+        return initial
+
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        signup_form = self.signup_form_class(request.POST)
+
+        if 'signup' in request.POST:
+            if signup_form.is_valid():
+                return self.form_valid(signup_form)
+            else:
+                return self.form_invalid(form=False, signup_form=signup_form)
+        
+        if form.is_valid():
+            return self.form_valid(form, signup_form=False)
+        else:
+            return self.form_invalid(form, signup_form=False)
+
+    def form_invalid(self, form, signup_form):
+        print("FORM ERROR MESSAGE: ",form.errors if isinstance(form, LoginForm) else 'None')
+        print("SIGN UP FORM ERROR MESSAGE: ", signup_form.errors if isinstance(signup_form, SignupForm) else 'None')
+        print("POST REQUEST : ",self.request.POST)
+        context = self.get_context_data()
+        context['signup_form'] = signup_form if signup_form else self.signup_form_class
+        context['form'] = form if form else self.get_form_class()
+        context['signin_errors'] = False
+        context['signup_errors'] = False
+        if 'signin' in self.request.POST:
+            context['signin_errors'] = True
+        elif 'signup' in self.request.POST:
+            context['signup_errors'] = True
+        return self.render_to_response(context)
 
 
 def log_out(request):
