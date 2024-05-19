@@ -83,6 +83,7 @@ sensitive_post_parameters_m = method_decorator(
     sensitive_post_parameters("oldpassword", "password", "password1", "password2")
 )
 
+
 @method_decorator(rate_limit(action="signup"), name="dispatch")
 class HomeView(
     RedirectAuthenticatedUserMixin,
@@ -98,16 +99,17 @@ class HomeView(
     @sensitive_post_parameters_m
     @method_decorator(never_cache)
     def dispatch(self, request, *args, **kwargs):
+        if allauth_app_settings.SOCIALACCOUNT_ONLY and request.method != "GET":
+            raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)
-
-    # def get_form_class(self):
-    #     print(self.request.POST)
-    #     if 'signup' in self.request.POST:
-    #         return self.signup_form_class
-    #     elif 'signin' in self.request.POST:
-    #         return self.form_class
-    #     else:
-    #         return self.form_class
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["request"] = self.request
+        return kwargs
+    
+    def get_form_class(self):
+        return get_form_class(app_settings.FORMS, "login", self.form_class)
 
     def form_valid(self, form):
         if isinstance(form, self.signup_form_class):
@@ -134,7 +136,6 @@ class HomeView(
     def get_context_data(self, **kwargs):
         ret = super().get_context_data(**kwargs)
         form = ret["form"]
-        print(ret)
         email = self.request.session.get("account_verified_email")
         if email:
             email_keys = ["email"]
@@ -195,14 +196,11 @@ class HomeView(
                 return self.form_invalid(form=False, signup_form=signup_form)
         
         if form.is_valid():
-            return self.form_valid(form, signup_form=False)
+            return self.form_valid(form)
         else:
             return self.form_invalid(form, signup_form=False)
 
     def form_invalid(self, form, signup_form):
-        print("FORM ERROR MESSAGE: ",form.errors if isinstance(form, LoginForm) else 'None')
-        print("SIGN UP FORM ERROR MESSAGE: ", signup_form.errors if isinstance(signup_form, SignupForm) else 'None')
-        print("POST REQUEST : ",self.request.POST)
         context = self.get_context_data()
         context['signup_form'] = signup_form if signup_form else self.signup_form_class
         context['form'] = form if form else self.get_form_class()
