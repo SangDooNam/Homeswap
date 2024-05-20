@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from phonenumber_field.widgets import PhoneNumberInternationalFallbackWidget
 
 from .models import HomePhoto, AppUser
 from typing import Any
@@ -72,14 +73,17 @@ class ProfileForm(forms.ModelForm):
         }
         widgets = {
             'postal_code': forms.NumberInput(attrs={'class': 'no-spinners'}),
+            'phone_number': PhoneNumberInternationalFallbackWidget(attrs={'region':'DE'}),
         }
-    
+
     def __init__(self, *args, **kwargs):
         
         self.field_name = kwargs.pop('field_name', None)
         super(ProfileForm, self).__init__(*args, **kwargs)
         if self.field_name:
             self.fields[self.field_name] = self.Meta.model._meta.get_field(self.field_name).formfield()
+        else:
+            self.fields['profile_photo'] = self.Meta.model._meta.get_field('profile_photo').formfield()
             
     def clean(self):
         cleaned_data = super().clean()

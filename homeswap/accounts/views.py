@@ -13,7 +13,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.core.validators import validate_email
 
 from django.utils.decorators import method_decorator
@@ -71,6 +71,8 @@ from allauth.utils import get_form_class
 from typing import Any
 from .models import AppUser, HomePhoto
 from .forms import RegistrationForm, ProfileForm, HomePhotoForm #HomePhotoFormSet
+from blog.models import BlogPost
+from blog.forms import BlogPostForm
 
 from bs4 import BeautifulSoup
 import re
@@ -78,6 +80,17 @@ import re
 def extract_error_message(errors):
     soup = BeautifulSoup(errors.as_ul(), "html.parser")
     return soup.get_text()
+
+
+def get_or_none(model, *args, **kwargs):
+    
+    try:
+        return model.objects.get(*args, **kwargs)
+    except ObjectDoesNotExist:
+        return None
+    except model.DoesNotExist:
+        return None
+
 
 sensitive_post_parameters_m = method_decorator(
     sensitive_post_parameters("oldpassword", "password", "password1", "password2")
@@ -256,8 +269,12 @@ class ProfileView(DetailView):
         
         self.form_name = self.request.session.get('form_name', None)
         
-        
         photos = HomePhoto.objects.filter(user=self.request.user)
+        individual_post = get_or_none(BlogPost, user=self.request.user)
+        self.profile_photo_form = ProfileForm()
+        
+        context['profile_photo_form'] = self.profile_photo_form
+        context['individual_post'] = individual_post
         context['photos'] = photos
         context['extra_num'] = self.extra_forms
         context['left_amount'] = self.left_amount
@@ -266,22 +283,41 @@ class ProfileView(DetailView):
         return context
     
     def post(self, request, *args, **kwargs):
+        
         FormClass = self.get_form_class()
         formset = FormClass(request.POST, request.FILES, queryset=HomePhoto.objects.none())
+        print(request.POST, request.FILES)
         
-        if formset.is_valid() and request.FILES:
+        if formset.is_valid():
             instances = formset.save(commit=False)
             for instance in instances:
                 instance.user = request.user
                 instance.save()
             formset.save()
-
             return HttpResponseRedirect(self.success_url)
-        else:
-            return self.form_invalid(formset)
+        
+        if 'profile_photo' in request.FILES:
+            field_name = 'profile_photo'
+            profile_form = ProfileForm(request.POST, request.FILES, field_name=field_name, instance=self.get_object())
+            if profile_form.is_valid():
+                profile_instance = profile_form.save(commit=False)
+                profile_instance.user = request.user
+                profile_instance.save()
+                return HttpResponseRedirect(self.success_url)
+            else:
+                return self.form_invalid(profile_form)
+        
+        return self.form_invalid(formset)
     
-    def form_invalid(self, formset):
-        return HttpResponseRedirect(self.success_url)
+    def form_invalid(self, form):
+        context = self.get_context_data(form=form)
+        profile_view = ProfileView()
+        profile_view.request = self.request
+        profile_view.object = self.get_object()
+        profile_context = profile_view.get_context_data()
+        context.update(profile_context)
+
+        return render(self.request, 'main/profile.html', context)
 
 
 class ProfileEditView(UpdateView):
@@ -403,6 +439,10 @@ class ProfileDetailsFactory(TemplateView):
         elif self.form_name and self.form_name == 'biography':
             
             template = 'partials/biography.html'
+            
+        elif self.form_name and self.form_name == 'profile_photo':
+            
+            template = 'partials/profile_photo.html'
         
         return template
     

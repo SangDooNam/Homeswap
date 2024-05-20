@@ -1,5 +1,5 @@
 {% if profile.first_name %}
-    <div class="profile-detail" id="edit-first_name">
+    <div class="profile-detail" id="edit-first_name"  hx-swap="outerHTML">
         <div>
             <strong class="profile-value">{{ profile.first_name }}</strong>
             <p class="label-text">First name</p>
