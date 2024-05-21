@@ -16,7 +16,7 @@
         <div id="searchResults">
             {% if blog_posts %}
                 {% for post in blog_posts %}
-                    <a href="{% url 'blog:blog_post_details' post.id %}" target="_blank">
+                <a href="{% url 'search:blog_post_details' post.id %}" target="_blank">
                         <div class="search-result">
                             <h2>Title: {{ post.title }}</h2>
                             <p>Location: {{ post.location }}</p>

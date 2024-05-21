@@ -45,20 +45,17 @@ def search_view(request):
 
     return render(request, 'search/search_form.html', {'form': form, 'blog_posts': blog_posts})
 
+
 @api_view(['GET'])
 def blog_post_details_view(request, post_id):
     blog_post = get_object_or_404(BlogPost, id=post_id)
-    photos = HomePhoto.objects.filter(user=blog_post.user)
-    
-    data = {
-        'title': blog_post.title,
-        'description': blog_post.description,
-        'location': blog_post.location,
-        'to_city': blog_post.to_city,
-        'max_capacity': blog_post.max_capacity,
-        'start_date': blog_post.start_date,
-        'end_date': blog_post.end_date,
-        'user_photos': [{'image_url': photo.image.url, 'photo_type': photo.photo_type} for photo in photos]
+    user_photos = HomePhoto.objects.filter(user=blog_post.user)
+
+    print("User Photos:", user_photos)  # Debug statement to check user_photos
+
+    context = {
+        'blog_post': blog_post,
+        'user_photos': user_photos
     }
-    
-    return Response(data, status=status.HTTP_200_OK)
+
+    return render(request, 'search/blog_post_details.html', context)

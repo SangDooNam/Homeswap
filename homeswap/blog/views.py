@@ -62,7 +62,3 @@ class BlogPostView(FormView):
     
 
 
-def blog_post_details(request, post_id):
-    blog_post = get_object_or_404(BlogPost, id=post_id)
-    
-    return render(request, 'blog_post_details.html', {'blog_post': blog_post})

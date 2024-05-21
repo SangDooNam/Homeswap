@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post Details</title>
+</head>
+<body>
+    <h1>Blog Post Details</h1>
+
+    <div id="blogPostDetails">
+        <h2>Title: {{ blog_post.title }}</h2>
+        <p>Description: {{ blog_post.description }}</p>
+        <p>Location: {{ blog_post.location }}</p>
+        <p>To City: {{ blog_post.to_city }}</p>
+        <p>Max Capacity: {{ blog_post.max_capacity }}</p>
+        <p>Start Date: {{ blog_post.start_date }}</p>
+        <p>End Date: {{ blog_post.end_date }}</p>
+    </div>
+
+    <div id="userPhotos">
+        {% for photo in user_photos %}
+            <img src="{{ photo.image.url }}" alt="{{ photo.photo_type }}">
+        {% endfor %}
+    </div>
+</body>
+</html>
