@@ -7,85 +7,30 @@
 </head>
 <body>
     <h1>Search Blog Posts</h1>
-    <form id="searchForm" action="{% url 'search:search' %}" method="GET">
-        <label for="search_destination">Destination:</label>
-        <input type="text" id="search_destination" name="search_destination" required>
-        <br>
-        <label for="search_start_date">Start Date:</label>
-        <input type="date" id="search_start_date" name="search_start_date" required>
-        <br>
-        <label for="search_end_date">End Date:</label>
-        <input type="date" id="search_end_date" name="search_end_date" required>
-        <br>
-        <label for="search_num_travelers">Number of Travelers:</label>
-        <input type="number" id="search_num_travelers" name="search_num_travelers" min="1" required>
-        <br>
+    <form action="{% url 'search:search' %}" method="GET">
+        {{ form.as_p }}
         <button type="submit">Search</button>
     </form>
 
-    <div id="searchResults"></div>
-
-    <script>
-        document.getElementById('searchForm').addEventListener('submit', function(event) {
-            event.preventDefault(); 
-            
-            var formData = new FormData(this);
-
-            fetch('/search/api/search/?' + new URLSearchParams(formData), {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                var searchResultsDiv = document.getElementById('searchResults');
-                searchResultsDiv.innerHTML = ''; 
-
-                if (data.length > 0) {
-                    data.forEach(post => {
-                        var resultLink = document.createElement('a');
-                        resultLink.href = '/blog/details/' + post.id + '/'; 
-                        resultLink.target = '_blank'; 
-
-                        var resultDiv = document.createElement('div');
-                        resultDiv.classList.add('search-result'); 
-
-                        var titleElement = document.createElement('h2');
-                        titleElement.textContent = post.title; 
-                        resultDiv.appendChild(titleElement);
-
-                        var locationElement = document.createElement('p');
-                        locationElement.textContent = 'Location: ' + post.location; 
-                        resultDiv.appendChild(locationElement);
-
-                        var toCityElement = document.createElement('p');
-                        toCityElement.textContent = 'To City: ' + post.to_city; 
-                        resultDiv.appendChild(toCityElement);
-
-                        var maxCapacityElement = document.createElement('p');
-                        maxCapacityElement.textContent = 'Max Capacity: ' + post.max_capacity; 
-                        resultDiv.appendChild(maxCapacityElement);
-
-                        var startDateElement = document.createElement('p');
-                        startDateElement.textContent = 'Start Date: ' + post.start_date; 
-                        resultDiv.appendChild(startDateElement);
-
-                        var endDateElement = document.createElement('p');
-                        endDateElement.textContent = 'End Date: ' + post.end_date; 
-                        resultDiv.appendChild(endDateElement);
-
-                        resultLink.appendChild(resultDiv);
-                        searchResultsDiv.appendChild(resultLink);
-                    });
-                } else {
-                    var noResultsElement = document.createElement('p');
-                    noResultsElement.textContent = 'No results found.';
-                    searchResultsDiv.appendChild(noResultsElement);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    </script>
+    {% if blog_posts is not None %}
+        <div id="searchResults">
+            {% if blog_posts %}
+                {% for post in blog_posts %}
+                    <a href="{% url 'blog:blog_post_details' post.id %}" target="_blank">
+                        <div class="search-result">
+                            <h2>Title: {{ post.title }}</h2>
+                            <p>Location: {{ post.location }}</p>
+                            <p>To City: {{ post.to_city }}</p>
+                            <p>Max Capacity: {{ post.max_capacity }}</p>
+                            <p>Start Date: {{ post.start_date }}</p>
+                            <p>End Date: {{ post.end_date }}</p>
+                        </div>
+                    </a>
+                {% endfor %}
+            {% else %}
+                <p>No results found.</p>
+            {% endif %}
+        </div>
+    {% endif %}
 </body>
 </html>
