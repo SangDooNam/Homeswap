@@ -7,6 +7,7 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+
     initial = True
 
     dependencies = [
@@ -15,7 +16,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="BlogPost",
+            name='BlogPost',
             fields=[
                 (
                     "id",
@@ -26,21 +27,22 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("title", models.CharField(default="Untitled", max_length=100)),
                 ("location", models.CharField(max_length=100)),
                 ("max_capacity", models.PositiveIntegerField()),
                 ("to_city", models.CharField(max_length=100)),
-                ("start_date", models.DateField(default=django.utils.timezone.now)),
-                ("end_date", models.DateField()),
-                ("num_travelers", models.PositiveIntegerField(default=1)),
+                ("date_period", models.DateField()),
+                ("num_travelers", models.PositiveIntegerField()),
                 ("description", models.TextField()),
-                ("created_date", models.DateField(auto_now_add=True)),
-                ("updated_date", models.DateField(auto_now=True)),
+                (
+                    "home_photos",
+                    models.ManyToManyField(
+                        related_name="blog_posts", to="accounts.homephoto"
+                    ),
+                ),
                 (
                     "user",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="blog_by_user",
                         to=settings.AUTH_USER_MODEL,
                     ),
                 ),

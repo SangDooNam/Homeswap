@@ -1,26 +1,30 @@
-from django.http import JsonResponse
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework import status
+from .serializers import BlogPostSerializer
 from blog.models import BlogPost
+from accounts.models import AppUser
+from rest_framework.permissions import IsAuthenticated
 
 
-def search_blog_posts(request):
-    max_capacity_filter = request.GET.get('max_capacity')
-    from_city_filter = request.GET.get('from_city')
-    to_city_filter = request.GET.get('to_city')
-    dates_filter = request.GET.get('dates')
-    
-    blog_posts = BlogPost.objects.all()
-    
-    if max_capacity_filter:
-        blog_posts = blog_posts.filter(max_capacity=max_capacity_filter)
-    if from_city_filter:
-        blog_posts = blog_posts.filter(from_city=from_city_filter)
-    if to_city_filter:
-        blog_posts = blog_posts.filter(to_city=to_city_filter)
-    if dates_filter:
-        blog_posts = blog_posts.filter(date_period=dates_filter)
-    
-    data = [{'from_city': post.from_city, 'to_city': post.to_city,
-             'description': post.description} for post in blog_posts]
-    return JsonResponse(data, safe=False)
+@api_view(['GET'])
+def search_view(request):
+    if not request.user.is_authenticated:
+        return Response({"error": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
 
+    user_location = request.user.location
+    search_destination = request.query_params.get('search_destination')
+    search_start_date = request.query_params.get('search_start_date')
+    search_end_date = request.query_params.get('search_end_date')
+    search_num_travelers = request.query_params.get('search_num_travelers')
 
+    blog_posts = BlogPost.objects.filter(
+        to_city=user_location,  
+        location=search_destination,
+        start_date__lte=search_start_date,
+        end_date__gte=search_end_date,
+        max_capacity__gte=search_num_travelers,
+    )
+
+    serializer = BlogPostSerializer(blog_posts, many=True)
+    return Response(serializer.data)

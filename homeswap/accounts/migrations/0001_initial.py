@@ -11,15 +11,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+
     initial = True
 
     dependencies = [
-        ("auth", "0012_alter_user_first_name_max_length"),
+        ('auth', '0012_alter_user_first_name_max_length'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name="AppUser",
+            name='AppUser',
             fields=[
                 (
                     "id",
@@ -113,8 +114,8 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("biography", models.TextField(blank=True, null=True)),
-                ("street", models.CharField(blank=True, max_length=100, null=True)),
-                ("location", models.CharField(blank=True, max_length=50, null=True)),
+                ("addresse", models.TextField(blank=True, max_length=100, null=True)),
+                ("location", models.TextField(blank=True, max_length=50, null=True)),
                 ("max_capacity", models.SmallIntegerField(blank=True, null=True)),
                 (
                     "postal_code",
@@ -152,48 +153,24 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "verbose_name": "user",
-                "verbose_name_plural": "users",
-                "abstract": False,
+                'verbose_name': 'user',
+                'verbose_name_plural': 'users',
+                'abstract': False,
             },
             managers=[
-                ("objects", django.contrib.auth.models.UserManager()),
+                ('objects', django.contrib.auth.models.UserManager()),
             ],
         ),
         migrations.CreateModel(
-            name="HomePhoto",
+            name='HomePhoto',
             fields=[
-                (
-                    "id",
-                    models.BigAutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
-                (
-                    "image",
-                    models.ImageField(blank=True, null=True, upload_to="home_photos"),
-                ),
-                (
-                    "photo_type",
-                    models.CharField(
-                        help_text="Type of the Photo, e.g., 'kitchen', 'living room'.",
-                        max_length=50,
-                    ),
-                ),
-                (
-                    "user",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="home_photos",
-                        to=settings.AUTH_USER_MODEL,
-                    ),
-                ),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('image', models.ImageField(blank=True, null=True, upload_to='home_photos')),
+                ('photo_type', models.CharField(help_text="Type of the Photo, e.g., 'kitchen', 'living room'.", max_length=50)),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='home_photos', to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                "abstract": False,
+                'abstract': False,
             },
         ),
     ]
