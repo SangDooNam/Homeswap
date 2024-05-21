@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from accounts.models import AppUser, HomePhoto
+from accounts.models import AppUser
 
 
 
@@ -15,10 +15,6 @@ class BlogPost(models.Model):
     end_date = models.DateField()
     num_travelers = models.PositiveIntegerField(default=1)
     description = models.TextField()
-    
-    
+    created_date = models.DateField(auto_now_add=True)
+    updated_date = models.DateField(auto_now=True)
 
-    # def save(self, *args, **kwargs):
-    #     self.location = self.user.location
-    #     self.max_capacity = self.user.max_capacity
-    #     super().save(*args, **kwargs)

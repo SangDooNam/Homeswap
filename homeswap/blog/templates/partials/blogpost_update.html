@@ -1,0 +1,42 @@
+{% load account_tag %}
+<div id="blog-update" class="container">
+    <h3>Edit your blog post</h3>
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <form method="POST" hx-post="{% url 'blog:edit' pk=pk %}" hx-target="#blog-update">
+                    {% if form.location.errors or form.max_capacity.errors %}
+                        {% for error in form.location.errors %}
+                                {% if error != 'This field is required.' %}
+                                <div class="alert alert-danger">
+                                    {{ error }}
+                                </div>
+                                {% endif %}
+                        {% endfor %}
+                        {% for error in form.max_capacity.errors %}
+                            {% if error != 'This field is required.' %}
+                            <div class="alert alert-danger">
+                                {{ error }}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% csrf_token %}
+                {% for field in form %}
+                    {% if field.name != 'location' and field.name != 'max_capacity' %}
+                            <label for="{{ field.id_for_label }}" style="color: dimgrey;">{{ field.label }}</label>
+                        <div class="mb-3">
+                            {{ field|add_class:'form-control' }}
+                            {% for error in field.errors %}
+                                <div class="alert alert-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-primary create_blog_post_button"  style="margin-top: 20px; margin-bottom: 20px;" type="submit">Submit</button>
+                    <a href='#' hx-get='{% url "accounts:profile" %}' hx-target='#refresh' class="btn btn-warning create_blog_post_button"  style="margin-top: 20px; margin-bottom: 20px;">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

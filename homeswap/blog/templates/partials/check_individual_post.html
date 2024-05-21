@@ -1,0 +1,44 @@
+<div id='display-individual-post' class="blog-post-in-profile">
+    {% if individual_post %}
+    <h3>Please check your blog post</h3>
+    <div class="container d-flex flex-column align-items-center">
+        <div class="card mb-3" style="width: 40rem;">
+            <div class="card-header">
+                <h4 class="card-title">{{ individual_post.title }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="col-md-12 mb-4">
+                    <div class="row">
+                        <p class="card-text col-sm-2 mb-4">From:</p> <strong class="col-md-4 mb-4">{{ individual_post.user.location }}</strong> <p class="card-text col-md-2 mb-4">To:</p> <strong class="card-text col-md-4 mb-4">{{ individual_post.to_city }}</strong>
+                    </div>
+                    <div class="row">
+                        <p class="card-text col-sm-2 mb-4">Departure:</p> <strong class="col-md-4 mb-4">{{ individual_post.start_date }}</strong>  <p class="card-text col-md-2 mb-4">End:</p> <strong class="card-text col-md-4 mb-4">{{ individual_post.end_date }}</strong>
+                    </div>
+                    <div class="row">
+                        <p class="card-text col-sm-3 mb-4">Number of travelers:</p> <strong class="col-md-9 mb-4">{{ individual_post.num_travelers }}</strong>
+                    </div>
+                </div>
+                <div class="col-md-12 mb-4">
+                    <div>
+                        <div>
+                            <p class="card-text">Description:</p>
+                        </div> 
+                        <div class="custom-description">
+                            <p class="card-text" style="color: white;">{{ individual_post.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+                <a class="btn btn-primary" href="{% url 'blog:home' %}" role="button">Go to the blog</a>
+                <a class="btn btn-info" href="#" hx-get="{% url 'blog:edit' pk=individual_post.pk %}" hx-target='#display-individual-post' role="button" style="margin-left: 5px;">Edit</a>
+                <a class="btn btn-danger" href="#" hx-post="{% url 'blog:delete_blog' pk=individual_post.pk %}" hx-target='#refresh' role="button" style="margin-left: 5px;">Delete</a>
+        </div>
+    <div>
+    {% else %}
+    <h3>Create your blog post to find a home swap</h3>
+    <p style="color: black; margin-left: 700px;">You haven't created your blog post yet. <a class="btn btn-light blog-display-button" href='#' hx-get="{% url 'blog:create_blog' %}" hx-target="#display-individual-post" role="button">Click</a> here to create one or explore the <a class="btn btn-success blog-display-button" href="{% url 'blog:home' %}" role="button">blog</a></p>
+    {% endif %}
+    <br>
+</div>

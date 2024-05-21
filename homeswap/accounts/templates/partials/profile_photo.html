@@ -1,1 +1,40 @@
-<img src="{{ user.profile_photo.url }}" alt="{{ user.username }}'s photo">
+{% if profile.profile_photo %}
+    <div class="profile-detail" id="edit-profile_photo" hx-swap="outerHTML">
+        <div class="text-center">
+            <img src="{{ profile.profile_photo.url }}" class="img-center img-thumbnail" alt="{{ profile.username }}'s photo">
+        </div>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#ProfilePhotoModal">
+            <i class="bi bi-pen profile-photo-edit-icon"></i>
+        </a>
+    </div>
+{% endif %}
+<div id="ProfilePhotoModal" class="modal modal-blur fade" aria-modal="true" aria-hidden="true" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="fw-bold mb-0 fs-2">Upload your profile photo</h1>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-detail">
+                    <form method="post" enctype="multipart/form-data" action="{% url 'accounts:profile' %}">
+                        {% csrf_token %}
+                        {% if profile_photo_form %}
+                            <div class="row" style="margin-top: 2px;">
+                                <div class="col-sm-8">
+                                    <strong class='form-control'>{{ profile_photo_form }}</strong>
+                                </div>
+                                <div class="col-sm-4 d-flex justify-content-end align-items-center">
+                                    <button class="btn btn-info btn-custom me-2" type="submit">Submit</button>
+                                </div>
+                            </div>
+                            {% if profile_photo_form.error %}
+                                <div class="alert alert-danger" style="color: black;">{{ profile_photo_form.error }}</div>
+                            {% endif %}
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

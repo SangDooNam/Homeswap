@@ -29,6 +29,10 @@ db.sqlite3
 
 # Ignore media files
 /media/
+/home_photos/
+/profile_photo/
+*.png
+*.jpg
 
 # Ignore node_modules directory (if using JavaScript tools)
 node_modules/
