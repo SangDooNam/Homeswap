@@ -40,12 +40,11 @@ class BlogPostForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        # print('CLEANED DATA: ',cleaned_data)
-        # print('USER: ', self.fields)
         start_date = cleaned_data.get("start_date")
         end_date = cleaned_data.get("end_date")
         location = cleaned_data.get("location")
         max_capacity = cleaned_data.get("max_capacity")
+        num_travelers = cleaned_data.get("num_travelers")
 
         if start_date and end_date and start_date >= end_date:
             self.add_error('end_date', "End date must be after start date.")
@@ -55,6 +54,9 @@ class BlogPostForm(forms.ModelForm):
 
         if not max_capacity:
             self.add_error('max_capacity', "You need to fill in the max capacity of your home on your profile to post.")
+        
+        if num_travelers <= 0:
+            self.add_error('num_travelers', "Number of travelers need to be at least 1.")
         
         return cleaned_data
 

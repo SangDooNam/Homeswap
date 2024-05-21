@@ -3,6 +3,9 @@
     <h3>Please check your blog post</h3>
     <div class="container d-flex flex-column align-items-center">
         <div class="card mb-3" style="width: 40rem;">
+            <div class="card-header">
+                <h4 class="card-title">{{ individual_post.title }}</h4>
+            </div>
             <div class="card-body">
                 <div class="col-md-12 mb-4">
                     <div class="row">
@@ -29,7 +32,7 @@
         </div>
         <div class="d-flex justify-content-end">
                 <a class="btn btn-primary" href="{% url 'blog:home' %}" role="button">Go to the blog</a>
-                <a class="btn btn-info" role="button" style="margin-left: 5px;">Edit</a>
+                <a class="btn btn-info" href="#" hx-get="{% url 'blog:edit' pk=individual_post.pk %}" hx-target='#display-individual-post' role="button" style="margin-left: 5px;">Edit</a>
                 <a class="btn btn-danger" href="#" hx-post="{% url 'blog:delete_blog' pk=individual_post.pk %}" hx-target='#refresh' role="button" style="margin-left: 5px;">Delete</a>
         </div>
     <div>

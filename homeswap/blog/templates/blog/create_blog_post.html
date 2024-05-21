@@ -8,7 +8,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-5">
-                <form method="POST" hx-post="{% url 'blog:create_blog' %}" hx-target="#refresh">
+                <form method="POST" hx-post="{% url 'blog:create_blog' %}" hx-target="#create-blog">
                         {% if form.location.errors or form.max_capacity.errors %}
                             {% for error in form.location.errors %}
                                     {% if error != 'This field is required.' %}
