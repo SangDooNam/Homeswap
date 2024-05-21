@@ -1,10 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import BlogPostSerializer
+from .serializers import BlogPostSerializer, HomePhotoSerializer
 from blog.models import BlogPost
-from accounts.models import AppUser
+from accounts.models import AppUser, HomePhoto
 from datetime import datetime
 
 def search_form_view(request):
@@ -45,3 +45,22 @@ def search_view(request):
 
     serializer = BlogPostSerializer(blog_posts, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def blog_post_details_view(request, post_id):
+    blog_post = get_object_or_404(BlogPost, id=post_id)
+    photos = HomePhoto.objects.filter(user=blog_post.user)
+    
+    data = {
+        'title': blog_post.title,
+        'description': blog_post.description,
+        'location': blog_post.location,
+        'to_city': blog_post.to_city,
+        'max_capacity': blog_post.max_capacity,
+        'start_date': blog_post.start_date,
+        'end_date': blog_post.end_date,
+        'user_photos': [{'image_url': photo.image.url, 'photo_type': photo.photo_type} for photo in photos]
+    }
+    
+    return Response(data, status=status.HTTP_200_OK)

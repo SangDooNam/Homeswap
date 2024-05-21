@@ -26,7 +26,7 @@ class AppUser(AbstractUser):
     street = models.CharField(max_length=100, null=True, blank=True)
     location = models.CharField(max_length=50, null=True, blank=True)
     max_capacity = models.SmallIntegerField(null=True, blank=True)
-    postal_code = models.IntegerField(validators=[MinValueValidator(100000), MaxValueValidator(999999)], null=True, blank=True)
+    postal_code = models.IntegerField(validators=[MinValueValidator(10000), MaxValueValidator(999999)], null=True, blank=True)
     birthday_date = models.DateField(null=True, blank=True)
     
     def __str__(self) -> str:
