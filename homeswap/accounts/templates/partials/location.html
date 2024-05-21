@@ -1,0 +1,21 @@
+{% if profile.location %}
+    <div class="profile-detail" id="edit-location" hx-swap="outerHTML">
+        <div class="profile-info">
+            <strong class="profile-value">{{ profile.location }}</strong>
+            <p class="label-text">Location</p>
+        </div>
+        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='location' %}" hx-target="#edit-location">
+            <i class="bi bi-pen small-icon"></i>
+        </a>
+    </div>
+{% else %}
+    <div class="profile-detail" id="edit-location" hx-swap="outerHTML">
+        <div class="profile-info">
+            <strong class="profile-value">Location</strong>
+            <p class="label-text" style="color:indianred;">Please enter your location.</p>
+        </div>
+        <a href="#" hx-get="{% url 'accounts:profile_edit' form_name='location' %}" hx-target="#edit-location">
+            <i class="bi bi-pen small-icon"></i>
+        </a>
+    </div>
+{% endif %}

@@ -1,0 +1,360 @@
+*{
+    box-sizing: border-box;
+    font-family: AdventPro;
+}
+
+@font-face {
+    font-family: AdventPro;
+    src: url(../fonts/AdventPro-VariableFont_wdth\,wght.ttf);
+}
+@font-face {
+    font-family: AdventProItalic;
+    src: url(../fonts/AdventPro-Italic-VariableFont_wdth\,wght.ttf);
+}
+
+html {
+    scroll-padding-top: 180px;
+}
+
+body {
+    background-color: #eff1ee;
+    font-size: 16px;
+    color: #eff1ee;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background-color: #1b1c27;
+    display: flex;
+    margin: -8px;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    padding: 0px 20px;
+}
+
+nav ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    display: flex;
+}
+
+nav a {
+    font-family: AdventPro;
+    letter-spacing: 1px;
+    text-decoration: none;
+    color: #eff1ee;
+    padding: 10px 15px;
+    display: block;
+    font-size: 22px;
+    margin: 8px 0px;
+}
+
+nav a:hover {
+    color: black;
+    background-color: #9ec1d7;
+}
+
+.login-button {
+    font-family: AdventPro;
+    font-size: 20px;
+    padding: 5px 20px;
+    background-color: #9ec1d7; 
+    color: #1b1c27; 
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    max-width: 200px;
+}
+
+.login-button:hover {
+    background-color: #eff1ee; 
+}
+
+.home {
+    display: flex;
+    background-image: url(../img/homeswap.gif);
+    min-height: 900px;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin: -8px;
+    flex-direction: column;
+    text-align: justify;
+    align-items: left;
+    justify-content: center;
+    line-height: 30px;
+}
+
+.home p {
+    font-size: 25px;
+    margin: 40px 100px;
+}
+
+h1 {
+    font-family: AdventPro;
+    text-shadow: 2px 5px 4px rgb(0, 0, 0);
+    font-size: 80px;
+    line-height: 80px;
+    text-align: left;
+    margin: 100px;
+}
+
+.signup-button {
+    font-family: AdventPro;
+    font-size: 20px;
+    padding: 20px 70px;
+    background-color: transparent; 
+    color: #eff1ee; 
+    border: 2px solid #eff1ee;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    margin: 100px;
+}
+
+.signup-button:hover {
+    background-color: #18465a; 
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    text-align: justify;
+    align-items: center;
+    justify-content: center;
+    line-height: 30px;
+    margin: 100px 10% 200px;
+}
+
+.content div {
+    background-color: #18465a;
+    border-radius: 10px;
+    padding: 15px 30px;
+}
+
+article {
+    display: flex;
+    justify-content: space-between;
+}
+
+article div {
+    width: 300px;
+    text-align: left;
+    margin: 0px 50px;
+}
+
+.content img {
+    max-width: 100%; 
+    height: auto; 
+}
+
+.client {
+    background-color: #9ec1d7;
+    display: flex;
+    flex-direction: column;
+    text-align: justify;
+    align-items: center;
+    justify-content: center;
+    line-height: 30px;
+    padding: 150px 0px 200px;
+    margin:-8px;
+}
+
+.client div {
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px #18465a;
+    width: 400px;
+    border: 2px solid #eff1ee;
+    border-radius: 10px;
+    padding: 15px 30px;
+}
+
+h2 {
+    font-family: AdventPro;
+    font-size: 70px;
+    letter-spacing: 2px;
+    text-shadow: 2px 5px 4px black;
+}
+
+h3 {
+    color: #18465a;
+    font-size: 50px;
+    width: 300px;
+    text-align: left;
+    margin: 40px 50px;
+}
+.parallax1 {
+    background: url(../img/paralax1.jpg);
+    min-height: 300px;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px -8px;
+}
+
+.parallax2 {
+    background: url(../img/paralax2.jpg);
+    min-height: 300px;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px -8px;
+}
+
+.parallax3 {
+    background: url(../img/paralax3.jpg);
+    min-height: 300px;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px -8px;
+}
+
+.login {
+    color: #18465a;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    text-align: justify;
+    align-items: center;
+    justify-content: center;
+    line-height: 30px;
+}
+
+.login h2 {
+    color: #18465a;
+    padding-bottom: 100px;
+    text-shadow: 0px 0px 0px black;
+}
+
+.login label{
+    font-weight: bold;
+}
+
+.login input{
+    margin-bottom: 20px;
+}
+
+.login button {
+    background-color: #9ec1d7;
+    border-radius: 5px;
+    font-size: medium;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding: 10px 20px;
+    border: none; 
+}
+
+.login button:hover {
+    background-color: #18465a;
+    color: #eff1ee;
+}
+
+.register {
+    color: #18465a;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    line-height: 30px;
+}
+
+.register h2 {
+    color: #18465a;
+    padding-bottom: 100px;
+    text-shadow: 0px 0px 0px black;
+}
+
+.register table {
+    margin-bottom: 20px;
+}
+
+.submit-button input {
+    background-color: #9ec1d7;
+    border-radius: 5px;
+    font-size: medium;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding: 10px 20px;
+    border: none; 
+}
+
+.submit-button input:hover {
+    background-color: #18465a;
+    color: #eff1ee;
+}
+
+.profile {
+    color: #18465a;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    line-height: 30px;
+    padding-bottom: 50px;
+}
+
+.profile h3 {
+    color: #18465a;
+    font-size: 50px;
+    width: 300px;
+    text-align: center;
+    margin: 40px 50px;
+}
+
+
+.profile img {
+    max-height: 300px;
+}
+
+
+
+footer {
+    display: flex;
+    flex-direction: column;
+    color: #eff1ee;
+    background-color: #1b1c27;
+    margin: -8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 20px;
+}
+
+footer form{
+    padding-top: 100px;
+    padding-bottom: 80px;
+}
+
+footer img {
+    padding-top: 20px;
+}

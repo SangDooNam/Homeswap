@@ -5,6 +5,10 @@ import datetime
 
 
 class BlogPostForm(forms.ModelForm):
+    class Meta:
+        model = BlogPost
+        fields = ['title', 'to_city', 'start_date', 'end_date', 'num_travelers', 'description', 'max_capacity']
+        
     start_date = forms.DateField(
         label='Start Date',
         widget=forms.DateInput(
@@ -24,21 +28,35 @@ class BlogPostForm(forms.ModelForm):
         label='Number of travelers'
     )
     
-    location = forms.CharField()
+    max_capacity = forms.IntegerField(disabled=True)
+    location = forms.CharField(disabled=True)
     
-
-    class Meta:
-        model = BlogPost
-        fields = ['title', 'to_city', 'start_date', 'end_date', 'num_travelers', 'description']
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(BlogPostForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['location'].initial = user.location
+            self.fields['max_capacity'].initial = user.max_capacity
 
     def clean(self):
         cleaned_data = super().clean()
         start_date = cleaned_data.get("start_date")
         end_date = cleaned_data.get("end_date")
+        location = cleaned_data.get("location")
+        max_capacity = cleaned_data.get("max_capacity")
+        num_travelers = cleaned_data.get("num_travelers")
 
-        if start_date >= end_date:
-            raise forms.ValidationError(
-                "End date must be after start date."
-            )
+        if start_date and end_date and start_date >= end_date:
+            self.add_error('end_date', "End date must be after start date.")
+
+        if not location:
+            self.add_error('location', "You need to fill in your location on your profile to post.")
+
+        if not max_capacity:
+            self.add_error('max_capacity', "You need to fill in the max capacity of your home on your profile to post.")
+        
+        if num_travelers <= 0:
+            self.add_error('num_travelers', "Number of travelers need to be at least 1.")
+        
         return cleaned_data
 

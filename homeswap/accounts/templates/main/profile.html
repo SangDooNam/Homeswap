@@ -1,37 +1,108 @@
 {% extends "base.html" %}
-
+{% load account_tag %}
 {% block content %}
 <div>
 <section id="left-section">
 </section>
 <section id="middle-section">
     <div style="text-align: center;">
-        <h3>{{ profile.first_name }} {{ profile.last_name }}</h3>
+        <br>
+        <h1 style="text-align: center; margin-left: auto; margin-right: auto; width: 100%">{{ profile.username|capfirst }}</h1>
+        <br>
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <table class="table table-bordered table-light">
-                        {% if profile.profile_photo %}
-                            <tr style="text-align: left;">
-                                <td class="text-center"><img src="{{ profile.profile_photo.url }}" class="img-center img-thumbnail" alt="{{ profile.username }}'s photo"></td>
-                            </tr>
-                        {% endif %}
-                        <tr style="text-align: left;"><td><i class="bi bi-person"></i> {{ profile.username }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>First name : {{ profile.first_name }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>Last name : {{ profile.last_name }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>E-mail address : {{ profile.email }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>Phone number : {{ profile.phone_number }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>Street : {{ profile.street }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>Location : {{ profile.location }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>Postal code : {{ profile.postal_code }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>Occupancy limit : {{ profile.max_capacity }}</p><i class="bi bi-pen"></i></td></tr>
-                        <tr style="text-align: left;"><td><p>Biography : {{ profile.biography }}</p><i class="bi bi-pen"></i></td></tr>
-                    </table>
+                <div class="col-md-7 col-lg-8">
+                        {% comment %} {% if profile.profile_photo %}
+                        <div class="text-center">
+                            <img src="{{ profile.profile_photo.url }}" class="img-center img-thumbnail" alt="{{ profile.username }}'s photo">
+                        </div> {% endcomment %}
+                        {% include 'partials/profile_photo.html' %}
+                        <div class="container">
+                            <div class="row g-3" style="margin-top: 10px;">
+                                <div class="col-sm-5 gutter-content">
+                                {% include 'partials/first_name.html' %}
+                                </div>
+                                <div class="col-sm-5 gutter-content">
+                                {% include 'partials/last_name.html' %}
+                                </div>
+                                {% if error and form_name %}
+                                    {% if form_name == 'first_name' or form_name == 'last_name' %}
+                                        <div class="alert alert-danger custom-alert">
+                                            {{ error }}
+                                            <button type="button" class="btn-close custom-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <div class="row g-3" style="margin-top: 10px;">
+                                <div class="col-sm-5 gutter-content">
+                                {% include 'partials/email.html' %}
+                                </div>
+                                <div class="col-sm-5 gutter-content">
+                                {% include 'partials/phone_number.html' %}
+                                </div>
+                                {% if error %}
+                                    {% if form_name == 'email' or form_name == 'phone_number' %}
+                                        <div class="alert alert-danger custom-alert">
+                                            {{ error }}
+                                            <button type="button" class="btn-close custom-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <div class="row g-3" style="margin-top: 10px;">
+                                <div class="col-sm-5 gutter-content">
+                                {% include 'partials/max_capacity.html' %}
+                                </div>
+                                <div class="col-sm-5 gutter-content">
+                                {% include 'partials/street.html' %}
+                                </div>
+                                {% if error %}
+                                    {% if form_name == 'max_capacity' or form_name == 'street' %}
+                                        <div class="alert alert-danger custom-alert">
+                                            {{ error }}
+                                            <button type="button" class="btn-close custom-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <div class="row g-3" style="margin-top: 10px;">
+                                <div class="col-sm-5 gutter-content">
+                                {% include 'partials/postal_code.html' %}
+                                </div>
+                                <div class="col-sm-5 gutter-content">
+                                {% include 'partials/location.html' %}
+                                </div>
+                                {% if error %}
+                                    {% if form_name == 'postal_code' or form_name == 'location' %}
+                                        <div class="alert alert-danger custom-alert">
+                                            {{ error }}
+                                            <button type="button" class="btn-close custom-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <div class="row g-3" style="margin-top: 10px;">
+                                <div class="col-12 gutter-content-biography">
+                                {% include 'partials/biography.html' %}
+                                </div>
+                                {% if error %}
+                                    {% if form_name == 'biography' %}
+                                        <div class="alert alert-danger custom-alert">
+                                            {{ error }}
+                                            <button type="button" class="btn-close custom-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
                 </div>
             </div>
         </div>
         <br>
-        <a href="{% url 'accounts:profile_edit' %}" class="btn btn-primary" role="button">Edit Profile</a>
+    </div>
+    <div>
+        {% include "partials/check_individual_post.html" %}
     </div>
     <div>
         {% include "partials/image_upload.html" %}

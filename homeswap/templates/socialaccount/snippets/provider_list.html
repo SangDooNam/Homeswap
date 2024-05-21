@@ -12,7 +12,7 @@
                     {% endfor %}
                 {% endif %}
                 {% provider_login_url provider process=process scope=scope auth_params=auth_params as href %}
-                <button class="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" type="button" onclick="window.location.href='{{ href }}'">
+                <button class="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" style="border-color: white !important; color: white;" type="button" data-bs-toggle="modal" data-bs-target="#SocialModal">
                     Sign up with {{ provider.name }}
                     {% element provider provider_id=provider.id href=href %}
                 </button>
@@ -21,3 +21,9 @@
         {% endelement %}
     </div>
 {% endif %}
+
+
+{% comment %} <button class="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" type="button" onclick="window.location.href='{{ href }}'">
+    Sign up with {{ provider.name }}
+    {% element provider provider_id=provider.id href=href %}
+</button> {% endcomment %}

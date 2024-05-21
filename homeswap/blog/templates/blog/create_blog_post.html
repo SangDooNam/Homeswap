@@ -1,25 +1,51 @@
 <!-- create_blog_post.html -->
-{% extends "base.html" %}
 {% load account_tag %}
 
 {% block content %}
+<div id="create-blog">
+<h3>Plaese create blog post</h3>
 <div>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-5">
-                <h1>Create Blog Post</h1>
-                <form method="POST">
+                <form method="POST" hx-post="{% url 'blog:create_blog' %}" hx-target="#create-blog">
+                        {% if form.location.errors or form.max_capacity.errors %}
+                            {% for error in form.location.errors %}
+                                    {% if error != 'This field is required.' %}
+                                    <div class="alert alert-danger">
+                                        {{ error }}
+                                    </div>
+                                    {% endif %}
+                            {% endfor %}
+                            {% for error in form.max_capacity.errors %}
+                                
+                                {% if error != 'This field is required.' %}
+                                <div class="alert alert-danger">
+                                    {{ error }}
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
                     {% csrf_token %}
                     {% for field in form %}
-                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {% if field.name != 'location' and field.name != 'max_capacity' %}
+                                <label for="{{ field.id_for_label }}" style="color: dimgrey;">{{ field.label }}</label>
                             <div class="mb-3">
                                 {{ field|add_class:'form-control' }}
+                                {% for error in field.errors %}
+                                    <div class="alert alert-danger">{{ error }}</div>
+                                {% endfor %}
                             </div>
+                        {% endif %}
                     {% endfor %}
-                    <button class="btn btn-primary" type="submit">Submit</button>
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-primary create_blog_post_button"  style="margin-top: 20px; margin-bottom: 20px;" type="submit">Submit</button>
+                        <a href='#' hx-get='{% url "accounts:profile" %}' hx-target='#refresh' class="btn btn-warning create_blog_post_button"  style="margin-top: 20px; margin-bottom: 20px;">Cancel</a>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+<div>
 {% endblock %}
