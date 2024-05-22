@@ -167,6 +167,9 @@ POSTAL_CODE_REGEXES = {
 }
 
 def validate_postal_code(value, country_code):
+    if not value:
+        return ValidationError('Postal code is required.')
+    
     if country_code == 'Any country':
         for regex in POSTAL_CODE_REGEXES.values():
             if re.match(regex, value):

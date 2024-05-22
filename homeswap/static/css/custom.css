@@ -701,7 +701,7 @@ input[type="number"] {
 
 .btn-primary {
     background-color: #1b1c27 !important;
-    border-color: ##1b1c27 !important;
+    border-color: #1b1c27 !important;
 }
 
 .btn-primary:hover {
@@ -725,4 +725,6 @@ input[type="number"] {
     margin-bottom: 0 !important;
 }
 
-
+.custom-header {
+    font-size: 2rem; /* Adjust the size as needed */
+}

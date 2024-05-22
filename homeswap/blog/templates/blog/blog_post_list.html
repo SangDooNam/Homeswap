@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+<div id="search-results">
 {% block content %}
 {% block extra_css %}
 <style>
@@ -10,6 +10,9 @@
 {% endblock %}
 <br>
 <h1>Blog Post List</h1>
+<div style="text-align: right;">
+    {% include "search/search_form.html" %}
+</div>
 <br><br>
 <div class="container">
     {% for blog_post in blog_posts %}
@@ -104,3 +107,4 @@
     {% endfor %}
 </div>
 {% endblock %}
+</div>

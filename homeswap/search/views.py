@@ -7,6 +7,7 @@ from blog.models import BlogPost
 from accounts.models import AppUser, HomePhoto
 from datetime import datetime
 from .forms import BlogPostSearchForm
+from django.db.models import Q
 
 def search_form_view(request):
     form = BlogPostSearchForm()
@@ -24,14 +25,13 @@ def search_view(request):
                 search_start_date = form.cleaned_data['search_start_date']
                 search_end_date = form.cleaned_data['search_end_date']
                 search_num_travelers = form.cleaned_data['search_num_travelers']
-
+                
                 blog_posts = BlogPost.objects.filter(
-                    to_city=user_location,
-                    location=search_destination,
-                    start_date__lte=search_start_date,
-                    end_date__gte=search_end_date,
-                    max_capacity__gte=search_num_travelers,
-                )
+                    Q(to_city=user_location) &
+                    Q(location=search_destination) &
+                    Q(start_date__gte=search_start_date) &
+                    Q(end_date__lte=search_end_date) &
+                    Q(max_capacity__gte=search_num_travelers))
             else:
                 return render(request, 'search/search_form.html', {
                     'form': form,
@@ -42,8 +42,10 @@ def search_view(request):
             form = BlogPostSearchForm()
     else:
         form = BlogPostSearchForm()
-
-    return render(request, 'search/search_form.html', {'form': form, 'blog_posts': blog_posts})
+    
+    print(blog_posts)
+    return render(request, 'blog/blog_post_list.html', {'form': form, 'blog_posts': blog_posts})
+    # return render(request, 'search/search_form.html', {'form': form, 'blog_posts': blog_posts})
 
 
 @api_view(['GET'])

@@ -41,8 +41,10 @@ class AppUser(AbstractUser):
         if self.location and len(self.location) > 40:
             raise ValidationError({'location': 'location can contain not more 40 letters.'})
         
-        if self.postal_code and len(self.postal_code) > 10:
-            raise ValidationError({'postal_code': 'A postal code can contain a maximum of 10 characters.'})
+        if self.postal_code:
+            if len(self.postal_code) > 10:
+                raise ValidationError({'postal_code': 'A postal code can contain a maximum of 10 characters.'})
+            validate_postal_code(self.postal_code, 'Any country')
         
         # just for test
         # if self.phone_number and not self.phone_number.is_valid():

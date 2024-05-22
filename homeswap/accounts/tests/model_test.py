@@ -20,7 +20,7 @@ class Test(TestCase):
         home_photo = open(BASE_DIR / 'test_home_photo_1.jpg', 'rb')
 
         self.appuser_params = {
-            'username': 'unique_user',  # Ensure the username is unique
+            'username': 'unique_user', 
             'email': 'user@email.com',
             'profile_photo': File(profile_photo, name='default.jpg'),
             'phone_number': '+4917633344234',

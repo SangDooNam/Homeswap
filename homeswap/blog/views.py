@@ -15,6 +15,7 @@ from .forms import BlogPostForm
 from .models import BlogPost
 from accounts.models import HomePhoto
 from accounts.views import get_or_none
+from search.forms import BlogPostSearchForm
 
 
 class BlogListView(ListView):
@@ -28,7 +29,12 @@ class BlogListView(ListView):
         queryset = BlogPost.objects.all()
         
         return queryset
-
+    
+    def get_context_data(self, **kwargs: reverse_lazy) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['form'] = BlogPostSearchForm()
+        
+        return context
 
 class BlogPostCreateView(FormView):
     
@@ -57,6 +63,8 @@ class BlogPostCreateView(FormView):
     def form_valid(self, form):
         blog_post = form.save(commit=False)
         blog_post.user = self.request.user
+        blog_post.location = self.request.user.location
+        blog_post.max_capacity = self.request.user.max_capacity
         blog_post.save()
         return super().form_valid(form)
 

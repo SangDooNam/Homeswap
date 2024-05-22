@@ -1,4 +1,33 @@
 {% load static %}
+{% load account_tag %}
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+        Search
+    </button>
+    <div class="dropdown-menu dropdown-menu-dark p-3" style="min-width: 300px;">
+        <section class="search">
+            <h4 class="dropdown-header text-white custom-header">Search Blog Posts</h4>
+            <div class="dropdown-body">
+                <form action="{% url 'search:search' %}" method="GET" class="search-form">
+                    <div class="mb-3">
+                        {% for field in form %}
+                            <div class="mb-2">
+                                <label for="{{ field.id_for_label }}" class="form-label text-white">{{ field.label }}</label>
+                                {{ field|add_class:'form-control' }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-light">Search</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+{% comment %} {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,4 +66,4 @@
         {% endif %}
     </section>
 </body>
-</html>
+</html> {% endcomment %}
