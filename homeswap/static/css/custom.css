@@ -538,7 +538,7 @@ input[type="number"] {
 
 /* Modal content half transparent */
 .modal-content {
-    background-color: rgba(255, 255, 255, 0.1); /* 50% transparent white */
+    background-color: #1f5b74; /* 50% transparent white */
 }
 
 /* Modal backdrop half transparent */
@@ -616,7 +616,7 @@ input[type="number"] {
 }
 
 .blog-post-in-profile {
-    background-color: #f3e4e1;
+    background-color: #9ec1d7;
 }
 
 .blog-display-button {
@@ -642,7 +642,51 @@ input[type="number"] {
 }
 
 .description {
-    background-color:  #f3e4e1;
+    background-color:  #1f5a74;
     padding: 15px; /* Add padding to give space around the text */
     border-radius: 5px; /* Optional: add border-radius for rounded corners */
+}
+
+
+.btn-success {
+    background-color: #18465a !important;
+    border-color: #18465a !important;
+}
+
+.btn-success:hover {
+    background-color: #1f5a74 !important;
+}
+
+.btn-warning {
+    background-color: #9ec1d7 !important;
+    border-color: #9ec1d7 !important;
+}
+
+.btn-warning:hover {
+    background-color: #bfe0f5 !important;
+}
+
+.me-2 {
+    margin-right: 0.5rem !important;
+}
+
+
+.btn-primary {
+    background-color: #1b1c27 !important;
+    border-color: ##1b1c27 !important;
+}
+
+.btn-primary:hover {
+    background-color: #3a3b49 !important;
+}
+
+.btn-info {
+    background-color: #18465a !important;
+    border-color: #18465a !important;
+    color: #eff1ee;
+}
+
+.btn-info:hover {
+    background-color: #1f5a74 !important;
+    color: #eff1ee;
 }

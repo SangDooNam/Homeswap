@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% block extra_css %}
+<style>
+    body {
+        background-color: #9ec1d7; /* Replace with your desired background color */
+    }
+</style>
+{% endblock %}
 <br>
 <h1>Blog Post List</h1>
 <br><br>
@@ -52,7 +59,7 @@
                                         <p class="card-text">Description:</p>
                                     </div> 
                                     <div class="description">
-                                        <p class="card-text" style="color: black;">{{ blog_post.description }}</p>
+                                        <p class="card-text" style="color: white;">{{ blog_post.description }}</p>
                                     </div>
                                 </div>
                             </div>
