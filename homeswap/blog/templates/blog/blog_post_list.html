@@ -9,6 +9,7 @@
 </style>
 {% endblock %}
 <br>
+{% if blog_posts %}
 <h1>Blog Post List</h1>
 <div style="text-align: right;">
     {% include "search/search_form.html" %}
@@ -106,5 +107,11 @@
     </div>
     {% endfor %}
 </div>
+{% else %}
+<h1>No Blog Post found</h1>
+<div style="text-align: right;">
+    {% include "search/search_form.html" %}
+</div>
+{% endif %}
 {% endblock %}
 </div>
