@@ -27,7 +27,7 @@ class Test(TestCase):
             'street': 'Beispielstraße',
             'location': 'Berlin',
             'max_capacity': 2,
-            'postal_code': 12345,
+            'postal_code': '12345',
         }
 
         self.homephoto_params = {
@@ -59,7 +59,31 @@ class Test(TestCase):
         self.assertIn('user', fields)
         self.assertIn('photo_type', fields)
 
+    def test_phone_number(self):
+        params = self.appuser_params.copy()
+        params['username'] = 'unique_phone_number'
+        params['phone_number'] = '+123'
+        with self.assertRaises(ValidationError) as cm:
+            user = self.appuser(**params)
+            user.clean()
+        e = cm.exception
+        print('ERROR: ',e)
+        fields = [error[0] for error in e]
+        self.assertIn('phone_number', fields)
+        
+        
     def test_postal_code(self):
+        params = self.appuser_params.copy()
+        params['postal_code'] = 'A' * 14
+        params['username'] = 'unique_user_for_test'
+        with self.assertRaises(ValidationError) as cm:
+            user = self.appuser(**params)
+            user.clean()
+        e = cm.exception
+        fields = [error[0] for error in e]
+        self.assertIn('postal_code', fields)
+        
+        
         params = self.appuser_params.copy()
         params['postal_code'] = 'ABCDE'
         params['username'] = 'unique_user_postal_code'  
@@ -68,14 +92,6 @@ class Test(TestCase):
             user.clean()
         e = cm.exception
         fields = [error[0] for error in e]
-        self.assertIn('postal_code', fields)
-        
-        params['postal_code'] = '123456'  
-        with self.assertRaises(ValidationError) as cm:
-            user = self.appuser(**params)
-            user.clean()
-        e = cm.exception
-        fields = e.error_dict.keys()
         self.assertIn('postal_code', fields)
 
     def test_string_lengths(self):

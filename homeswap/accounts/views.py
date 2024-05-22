@@ -286,7 +286,6 @@ class ProfileView(DetailView):
         
         FormClass = self.get_form_class()
         formset = FormClass(request.POST, request.FILES, queryset=HomePhoto.objects.none())
-        print(request.POST, request.FILES)
         
         if formset.is_valid():
             instances = formset.save(commit=False)

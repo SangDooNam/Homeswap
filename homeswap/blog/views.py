@@ -59,7 +59,6 @@ class BlogPostCreateView(FormView):
         blog_post.user = self.request.user
         blog_post.save()
         return super().form_valid(form)
-    
 
 
 def delete_blog(request, pk):
@@ -108,7 +107,7 @@ class BlogPostUpdateView(UpdateView):
         return obj
 
     def get_queryset(self):
-        return BlogPost.objects.filter(user=self.request.user)
+        return BlogPost.objects.filter(pk=self.pk)
 
     def get_context_data(self, **kwargs: reverse_lazy) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)

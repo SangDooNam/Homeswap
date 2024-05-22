@@ -94,8 +94,6 @@ class ProfileForm(forms.ModelForm):
                 self.add_error(self.field_name, "Max capacity must be at least 1.")
             elif field_value > 10:
                 self.add_error(self.field_name, "Max capacity cannot exceed 10.")
-                
-        print('print errors from forms.py',self.errors)
         
         return cleaned_data
             

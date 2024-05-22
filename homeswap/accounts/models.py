@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
-from django.core.validators import RegexValidator
+from .validators import validate_postal_code
+
 
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -27,29 +28,27 @@ class AppUser(AbstractUser):
     street = models.CharField(max_length=40, null=True, blank=True)
     location = models.CharField(max_length=40, null=True, blank=True)
     max_capacity = models.SmallIntegerField(null=True, blank=True)
-    postal_code = models.CharField(
-        max_length=5, 
-        null=True, 
-        blank=True, 
-        validators=[RegexValidator(r'^\d{5}$', 'Postal code should contain exactly 5 digits')]
-    )
+    postal_code = models.CharField(max_length=10, null=True, blank=True)
     birthday_date = models.DateField(null=True, blank=True)
     
     def __str__(self) -> str:
         return self.username
 
     def clean(self):
-        if len(self.street) > 40:
+        if self.street and len(self.street) > 40:
             raise ValidationError({'street': 'street can contain not more 40 letters.'})
         
-        if len(self.location) > 40:
+        if self.location and len(self.location) > 40:
             raise ValidationError({'location': 'location can contain not more 40 letters.'})
         
-        if self.postal_code and not self.postal_code.isdigit():
-            raise ValidationError({'postal_code': 'Postal code should contain exactly 5 digits'})
+        if self.postal_code and len(self.postal_code) > 10:
+            raise ValidationError({'postal_code': 'A postal code can contain a maximum of 10 characters.'})
         
-        if len(self.postal_code) > 5:
-            raise ValidationError({'postal_code': 'Postal code should contain exactly 5 digits'})
+        # just for test
+        # if self.phone_number and not self.phone_number.is_valid():
+        #     raise ValidationError({'phone_number': 'Invalid phone number format.'})
+        
+        validate_postal_code(self.postal_code, 'Any country')
         
         super().clean()
 
