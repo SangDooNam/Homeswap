@@ -29,7 +29,7 @@ body {
 
 
 main {
-    flex-grow: 1; /* This allows the main content to grow to fill remaining space */
+    flex-grow: 1; 
 }
 
 header {
@@ -48,7 +48,10 @@ nav {
     display: flex;
     justify-content: center;
     align-items: center; 
-    width: 100%; 
+    width: 100%;
+    position: absolute;
+    left: 0; 
+    right: 0;
 }
 
 nav ul {
@@ -56,6 +59,20 @@ nav ul {
     padding: 0;
     list-style-type: none;
     display: flex;
+}
+
+nav ul li {
+    position: relative; 
+}
+
+nav ul li:not(:last-child)::after {
+    content: ''; 
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 1px; 
+    background-color: #fff; 
 }
 
 nav a {
@@ -66,7 +83,7 @@ nav a {
     padding: 10px 15px;
     display: block;
     font-size: 22px;
-    margin: 8px 0px;
+
 }
 
 nav a:hover {
@@ -411,18 +428,18 @@ footer img {
 }
 
 input.no-spinners {
-    -moz-appearance: textfield; /* For Firefox */
+    -moz-appearance: textfield; 
 }
 
 
 .custom-card-bg {
-    background-color: #f8f9fa; /* A light gray, as an example */
+    background-color: #f8f9fa; 
 }
 
 .profile-table {
-    width: 40%;      
-    height: auto;    
-    margin: auto; 
+    width: 40%;
+    height: auto;
+    margin: auto;
 }
 
 .img-center {
@@ -519,11 +536,11 @@ input[type="number"] {
     justify-content: space-between; 
     align-items: center;
     text-align: left;
-    width: 100%; /* Ensures full width and consistent alignment */
+    width: 100%; 
 }
 
 .profile-info {
-    width: 100%; /* Adjust this value based on your specific layout needs */
+    width: 100%; 
 }
 .profile-value {
      /* Example color, change as needed */
@@ -707,3 +724,5 @@ input[type="number"] {
     margin-top: 0 !important;
     margin-bottom: 0 !important;
 }
+
+
