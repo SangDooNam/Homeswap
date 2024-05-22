@@ -14,15 +14,22 @@
 
 html {
     scroll-padding-top: 180px;
+    height: 100%;
 }
 
 body {
     background-color: #eff1ee;
     font-size: 16px;
     color: #eff1ee;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+
+main {
+    flex-grow: 1; /* This allows the main content to grow to fill remaining space */
 }
 
 header {
@@ -86,7 +93,7 @@ nav a:hover {
 .home {
     display: flex;
     background-image: url(../img/homeswap.gif);
-    min-height: 900px;
+    min-height: 100vh;
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
@@ -122,7 +129,6 @@ h1 {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-
     margin: 5px;
 }
 
@@ -158,8 +164,8 @@ article div {
 }
 
 .content img {
-    max-width: 100%; 
-    height: auto; 
+    max-width: 100%;
+    height: auto;
 }
 
 .client {
@@ -349,11 +355,12 @@ footer {
     flex-direction: column;
     color: #eff1ee;
     background-color: #1b1c27;
-    margin: -8px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding-bottom: 20px;
+    flex-shrink: 0; 
+    margin: -8px;
 }
 
 footer form{
@@ -365,9 +372,6 @@ footer img {
     padding-top: 20px;
 }
 
-img{
-    border: 3px sold #000
-}
 
 .container-fluid {
     height: 100vh;
@@ -689,4 +693,10 @@ input[type="number"] {
 .btn-info:hover {
     background-color: #1f5a74 !important;
     color: #eff1ee;
+}
+
+
+.my-4 {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
 }
