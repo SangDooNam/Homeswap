@@ -3,8 +3,6 @@ from django.utils import timezone
 from accounts.models import AppUser
 
 
-
-
 class BlogPost(models.Model):
     title = models.CharField(max_length=100, default='Untitled')
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='blog_by_user')
@@ -17,4 +15,3 @@ class BlogPost(models.Model):
     description = models.TextField()
     created_date = models.DateField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
-

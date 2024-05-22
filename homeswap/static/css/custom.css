@@ -14,15 +14,22 @@
 
 html {
     scroll-padding-top: 180px;
+    height: 100%;
 }
 
 body {
     background-color: #eff1ee;
     font-size: 16px;
     color: #eff1ee;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+
+main {
+    flex-grow: 1; 
 }
 
 header {
@@ -41,7 +48,10 @@ nav {
     display: flex;
     justify-content: center;
     align-items: center; 
-    width: 100%; 
+    width: 100%;
+    position: absolute;
+    left: 0; 
+    right: 0;
 }
 
 nav ul {
@@ -49,6 +59,20 @@ nav ul {
     padding: 0;
     list-style-type: none;
     display: flex;
+}
+
+nav ul li {
+    position: relative; 
+}
+
+nav ul li:not(:last-child)::after {
+    content: ''; 
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 1px; 
+    background-color: #fff; 
 }
 
 nav a {
@@ -59,7 +83,7 @@ nav a {
     padding: 10px 15px;
     display: block;
     font-size: 22px;
-    margin: 8px 0px;
+
 }
 
 nav a:hover {
@@ -86,7 +110,7 @@ nav a:hover {
 .home {
     display: flex;
     background-image: url(../img/homeswap.gif);
-    min-height: 900px;
+    min-height: 100vh;
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
@@ -122,7 +146,6 @@ h1 {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-
     margin: 5px;
 }
 
@@ -158,8 +181,8 @@ article div {
 }
 
 .content img {
-    max-width: 100%; 
-    height: auto; 
+    max-width: 100%;
+    height: auto;
 }
 
 .client {
@@ -184,11 +207,12 @@ article div {
     padding: 15px 30px;
 }
 
+
 h2 {
     font-family: AdventPro;
     font-size: 70px;
     letter-spacing: 2px;
-    text-shadow: 2px 5px 4px black;
+    text-shadow: 2px 2px 2px black;
 }
 
 h3 {
@@ -197,6 +221,12 @@ h3 {
     text-align: left;
     margin: 40px 50px;
 }
+
+.content-numbers h3 {
+    width: 300px;
+}
+
+
 .parallax1 {
     background: url(../img/paralax1.jpg);
     min-height: 300px;
@@ -349,11 +379,12 @@ footer {
     flex-direction: column;
     color: #eff1ee;
     background-color: #1b1c27;
-    margin: -8px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding-bottom: 20px;
+    flex-shrink: 0; 
+    margin: -8px;
 }
 
 footer form{
@@ -365,9 +396,6 @@ footer img {
     padding-top: 20px;
 }
 
-img{
-    border: 3px sold #000
-}
 
 .container-fluid {
     height: 100vh;
@@ -400,18 +428,18 @@ img{
 }
 
 input.no-spinners {
-    -moz-appearance: textfield; /* For Firefox */
+    -moz-appearance: textfield; 
 }
 
 
 .custom-card-bg {
-    background-color: #f8f9fa; /* A light gray, as an example */
+    background-color: #f8f9fa; 
 }
 
 .profile-table {
-    width: 40%;      
-    height: auto;    
-    margin: auto; 
+    width: 40%;
+    height: auto;
+    margin: auto;
 }
 
 .img-center {
@@ -508,11 +536,11 @@ input[type="number"] {
     justify-content: space-between; 
     align-items: center;
     text-align: left;
-    width: 100%; /* Ensures full width and consistent alignment */
+    width: 100%; 
 }
 
 .profile-info {
-    width: 100%; /* Adjust this value based on your specific layout needs */
+    width: 100%; 
 }
 .profile-value {
      /* Example color, change as needed */
@@ -538,7 +566,7 @@ input[type="number"] {
 
 /* Modal content half transparent */
 .modal-content {
-    background-color: rgba(255, 255, 255, 0.1); /* 50% transparent white */
+    background-color: #1f5b74; /* 50% transparent white */
 }
 
 /* Modal backdrop half transparent */
@@ -616,7 +644,7 @@ input[type="number"] {
 }
 
 .blog-post-in-profile {
-    background-color: #f3e4e1;
+    background-color: #9ec1d7;
 }
 
 .blog-display-button {
@@ -642,7 +670,59 @@ input[type="number"] {
 }
 
 .description {
-    background-color:  #f3e4e1;
+    background-color:  #1f5a74;
     padding: 15px; /* Add padding to give space around the text */
     border-radius: 5px; /* Optional: add border-radius for rounded corners */
 }
+
+
+.btn-success {
+    background-color: #18465a !important;
+    border-color: #18465a !important;
+}
+
+.btn-success:hover {
+    background-color: #1f5a74 !important;
+}
+
+.btn-warning {
+    background-color: #9ec1d7 !important;
+    border-color: #9ec1d7 !important;
+}
+
+.btn-warning:hover {
+    background-color: #bfe0f5 !important;
+}
+
+.me-2 {
+    margin-right: 0.5rem !important;
+}
+
+
+.btn-primary {
+    background-color: #1b1c27 !important;
+    border-color: ##1b1c27 !important;
+}
+
+.btn-primary:hover {
+    background-color: #3a3b49 !important;
+}
+
+.btn-info {
+    background-color: #18465a !important;
+    border-color: #18465a !important;
+    color: #eff1ee;
+}
+
+.btn-info:hover {
+    background-color: #1f5a74 !important;
+    color: #eff1ee;
+}
+
+
+.my-4 {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+

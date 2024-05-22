@@ -113,4 +113,3 @@ class BlogPostUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['pk'] = self.pk
         return context
-    

@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Blog Posts</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <section class="search">
+        <h1>Search Blog Posts</h1>
+        <form action="{% url 'search:search' %}" method="GET" class="search-form">
+            {{ form.as_p }}
+            <button type="submit">Search</button>
+        </form>
+
+        {% if blog_posts is not None %}
+            <div id="searchResults">
+                {% if blog_posts %}
+                    {% for post in blog_posts %}
+                    <a href="{% url 'search:blog_post_details' post.id %}" target="_blank">
+                            <div class="search-result">
+                                <h2>Title: {{ post.title }}</h2>
+                                <p>Location: {{ post.location }}</p>
+                                <p>To City: {{ post.to_city }}</p>
+                                <p>Max Capacity: {{ post.max_capacity }}</p>
+                                <p>Start Date: {{ post.start_date }}</p>
+                                <p>End Date: {{ post.end_date }}</p>
+                            </div>
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    <p>No results found.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </section>
+</body>
+</html>
