@@ -3,6 +3,7 @@ from django.core.files import File
 from django.core.exceptions import ValidationError
 from django.apps import apps
 from pathlib import Path
+from django.db import models as db
 
 from datetime import datetime, timedelta
 import datetime as dt
@@ -115,12 +116,12 @@ class Test(TestCase):
         params['phone_number'] = '+4917623773834'
         
         today = dt.date.today()
-        older_then_today = today - timedelta(days=7)
+        older_than_today = today - timedelta(days=7)
         
         user = self.appuser.objects.create(**params)
         blogpost_params = self.blogpost_params.copy()
         blogpost_params['user'] = user
-        blogpost_params['start_date'] = older_then_today
+        blogpost_params['start_date'] = older_than_today
         
         blogpost = self.blogpost(**blogpost_params)
         with self.assertRaises(ValidationError) as cm:
@@ -138,12 +139,12 @@ class Test(TestCase):
         params['phone_number'] = '+4912323773834'
         
         today = dt.date.today()
-        older_then_today = today - timedelta(days=7)
+        older_than_today = today - timedelta(days=7)
         
         user = self.appuser.objects.create(**params)
         blogpost_params = self.blogpost_params.copy()
         blogpost_params['user'] = user
-        blogpost_params['end_date'] = older_then_today
+        blogpost_params['end_date'] = older_than_today
         
         blogpost = self.blogpost(**blogpost_params)
         with self.assertRaises(ValidationError) as cm:
@@ -170,3 +171,9 @@ class Test(TestCase):
         e = cm.exception
         fields = e.message_dict.keys()
         self.assertIn('num_travelers', fields)
+        
+    def test_foreign_keys(self):
+    
+        field = self.blogpost._meta.get_field("user")
+
+        self.assertTrue(isinstance(field, db.ForeignKey))
