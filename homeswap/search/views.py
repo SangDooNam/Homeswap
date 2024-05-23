@@ -29,8 +29,8 @@ def search_view(request):
                 blog_posts = BlogPost.objects.filter(
                     Q(to_city=user_location) &
                     Q(location=search_destination) &
-                    Q(start_date__gte=search_start_date) &
-                    Q(end_date__lte=search_end_date) &
+                    Q(start_date__lte=search_start_date) &
+                    Q(end_date__gte=search_end_date) &
                     Q(max_capacity__gte=search_num_travelers))
             else:
                 return render(request, 'search/search_form.html', {
