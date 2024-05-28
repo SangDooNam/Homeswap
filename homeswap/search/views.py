@@ -61,3 +61,33 @@ def blog_post_details_view(request, post_id):
     }
 
     return render(request, 'search/blog_post_details.html', context)
+
+
+@api_view(['GET'])
+def api_search_blog_posts_view(request):
+    if request.method == 'GET' and 'search_destination' in request.GET:
+        form = BlogPostSearchForm(request.GET)
+        if form.is_valid():
+            if request.user.is_authenticated:
+                user_location = request.user.location
+
+                search_destination = form.cleaned_data['search_destination']
+                search_start_date = form.cleaned_data['search_start_date']
+                search_end_date = form.cleaned_data['search_end_date']
+                search_num_travelers = form.cleaned_data['search_num_travelers']
+                
+                blog_posts = BlogPost.objects.filter(
+                    Q(to_city=user_location) &
+                    Q(location=search_destination) &
+                    Q(start_date__gte=search_start_date) &
+                    Q(end_date__lte=search_end_date) &
+                    Q(max_capacity__gte=search_num_travelers)
+                )
+
+                serializer = BlogPostSerializer(blog_posts, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Authentication credentials were not provided.'}, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'error': 'Invalid request method or missing search parameters.'}, status=status.HTTP_400_BAD_REQUEST)
