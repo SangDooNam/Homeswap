@@ -9,6 +9,7 @@ from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
 from django.views.generic.edit import UpdateView
 from django.http import Http404
+from django.core.paginator import Paginator
 
 from typing import Any
 from .forms import BlogPostForm
@@ -24,6 +25,11 @@ class BlogListView(ListView):
     template_name = 'blog_post_list.html'
     context_object_name = 'blog_posts'
     
+    def dispatch(self, request: HttpRequest, *args: reverse_lazy, **kwargs: reverse_lazy) -> HttpResponse:
+        self.page_number = request.GET.get('page', 1)
+        
+        return super().dispatch(request, *args, **kwargs)
+    
     def get_object(self, queryset: QuerySet[Any] | None = ...) -> Model:
         
         queryset = BlogPost.objects.all()
@@ -33,8 +39,15 @@ class BlogListView(ListView):
     def get_context_data(self, **kwargs: reverse_lazy) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['form'] = BlogPostSearchForm()
+        number_of_items = 5
+        
+        paginator = Paginator(self.get_object(), number_of_items)
+        page_obj = paginator.get_page(self.page_number)
+        
+        context['page_obj'] = page_obj
         
         return context
+
 
 class BlogPostCreateView(FormView):
     

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import search_view, search_form_view, blog_post_details_view
+from .views import search_view, search_form_view, blog_post_details_view, api_search_blog_posts_view
 
 app_name = 'search'
 

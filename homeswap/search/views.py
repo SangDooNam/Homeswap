@@ -44,7 +44,7 @@ def search_view(request):
         form = BlogPostSearchForm()
     
     print(blog_posts)
-    return render(request, 'blog/blog_post_list.html', {'form': form, 'blog_posts': blog_posts})
+    return render(request, 'blog/blog_post_search_list.html', {'form': form, 'blog_posts': blog_posts})
     # return render(request, 'search/search_form.html', {'form': form, 'blog_posts': blog_posts})
 
 

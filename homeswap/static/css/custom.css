@@ -728,3 +728,12 @@ input[type="number"] {
 .custom-header {
     font-size: 2rem; /* Adjust the size as needed */
 }
+
+.outlined-text {
+    color: white; /* Text color */
+    text-shadow:
+        -1px -1px 0 #000,  
+         1px -1px 0 #000,
+        -1px  1px 0 #000,
+         1px  1px 0 #000; 
+}
