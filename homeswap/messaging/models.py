@@ -1,18 +1,33 @@
-from django.conf import settings
 from django.db import models
+from accounts.models import AppUser
+from django.core.exceptions import ValidationError
 
-class Message(models.Model):
-    sender = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='sent_messages', on_delete=models.CASCADE)
-    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='received_messages', on_delete=models.CASCADE)
-    subject = models.CharField(max_length=255)
-    body = models.TextField()
-    sent_at = models.DateTimeField(auto_now_add=True)
-    read_at = models.DateTimeField(null=True, blank=True)
+
+class Room(models.Model):
+    sender_user = models.ForeignKey(AppUser, related_name='room_sender', on_delete=models.SET_NULL, null=True)
+    receiver_user = models.ForeignKey(AppUser, related_name='room_receiver', on_delete=models.SET_NULL, null=True)
+    room_name = models.CharField(max_length=100, unique=True)
+    sender_confirmed = models.BooleanField(default=False)
+    receiver_confirmed = models.BooleanField(default=False)
+    
+    @property
+    def is_confirmed(self):
+        return self.sender_confirmed and self.receiver_confirmed
 
     def __str__(self):
-        return f"Message from {self.sender} to {self.recipient} - {self.subject}"
+        return self.room_name
 
-    def mark_as_read(self):
-        self.read_at = timezone.now()
-        self.save()
+class Message(models.Model):
+    sender_user = models.ForeignKey(AppUser, related_name='sent_messages', on_delete=models.CASCADE)
+    receiver_user = models.ForeignKey(AppUser, related_name='received_messages', on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, related_name='chat_room', on_delete=models.CASCADE, null=True, blank=True)
+    message= models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+
+class ReportUser(models.Model):
+    reporter = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='subject')
+    reported = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='object')
+    block = models.BooleanField(default=False)
+    report_message = models.TextField(null=True, blank=True)
 

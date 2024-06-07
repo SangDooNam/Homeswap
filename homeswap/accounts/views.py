@@ -73,6 +73,9 @@ from .models import AppUser, HomePhoto
 from .forms import RegistrationForm, ProfileForm, HomePhotoForm #HomePhotoFormSet
 from blog.models import BlogPost
 from blog.forms import BlogPostForm
+from messaging.models import Room
+from support.forms import DepositForm
+from support.models import Deposit
 
 from bs4 import BeautifulSoup
 import re
@@ -240,7 +243,6 @@ class ProfileView(DetailView):
     
     def dispatch(self, request: HttpRequest, *args: reverse_lazy, **kwargs: reverse_lazy) -> HttpResponse:
         self.form_name = self.request.session.get('form_name', None)
-        
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_class(self):
@@ -273,6 +275,45 @@ class ProfileView(DetailView):
         individual_post = get_or_none(BlogPost, user=self.request.user)
         self.profile_photo_form = ProfileForm()
         
+        is_confirmed_room = None
+        rooms = Room.objects.filter(sender_user=self.request.user)| Room.objects.filter(receiver_user=self.request.user)
+        for room in rooms:
+            if room.is_confirmed:
+                is_confirmed_room = room
+        
+        is_paid_deposit = None
+        deposits = Deposit.objects.filter(sender_user=self.request.user) | Deposit.objects.filter(receiver_user=self.request.user)
+        for deposit in deposits:
+            if deposit.is_paid:
+                is_paid_deposit = deposit.is_paid
+        
+        target_user_blog = None
+        deposit_form = None
+        target_user = None
+        if is_confirmed_room:
+            if is_confirmed_room.sender_user == self.request.user:
+                target_user = is_confirmed_room.receiver_user
+            else:
+                target_user = is_confirmed_room.sender_user
+        
+            self.request.session['target_user'] = target_user.username
+            self.request.session['target_user_id'] = target_user.pk
+
+            target_user_blog = BlogPost.objects.get(user=target_user)
+        
+            if self.request.user == is_confirmed_room.sender_user:
+                deposit_form_field = 'sender_amount'
+            else:
+                deposit_form_field = 'receiver_amount'
+            
+            deposit_form = DepositForm(field_name=deposit_form_field)
+        
+        context['is_paid_deposit'] = is_paid_deposit
+        context['target_user_blog'] = target_user_blog
+        context['deposit_form'] = deposit_form
+        context['is_confirmed'] = is_confirmed_room
+        context['object_user'] = target_user
+        context['rooms'] = rooms
         context['profile_photo_form'] = self.profile_photo_form
         context['individual_post'] = individual_post
         context['photos'] = photos

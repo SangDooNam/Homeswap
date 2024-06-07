@@ -45,8 +45,44 @@
                 </nav>
             {% endif %}
             {% if user.is_authenticated %}
-                <div style="item-align: right; margin-right: 30px;">
-                    <a href="{% url 'accounts:profile' %}" class="btn btn-success" role="button">Profile</a>
+                <div class="d-flex justify-content-end align-items-center" style="margin-right: 30px;">
+                    <div class="dropdown me-2">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            Messenger
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-dark p-3" style="min-width: 300px;">
+                            <section class="search">
+                                <h4 class="dropdown-header text-white custom-header">Messenger</h4>
+                                <div class="dropdown-body">
+                                    {% for room in user.room_receiver.all %}
+                                        {% if room.sender_user.username != user.username %}
+                                            <div class="row mb-2 align-items-center">
+                                                <div class="col-auto">
+                                                    <img src="{{ room.sender_user.profile_photo.url }}" class="img-thumbnail rounded-circle img-small">
+                                                </div>
+                                                <div class="col">
+                                                    <button type="button" class="btn btn-primary open-chat-btn w-100" onclick="openChat('{{ room.sender_user.id }}', '{{ room.room_name }}')">{{ room.sender_user.username }}</button>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% for room in user.room_sender.all %}
+                                        {% if room.receiver_user.username != user.username %}
+                                            <div class="row mb-2 align-items-center">
+                                                <div class="col-auto">
+                                                    <img src="{{ room.receiver_user.profile_photo.url }}" class="img-thumbnail rounded-circle img-small">
+                                                </div>
+                                                <div class="col">
+                                                    <button type="button" class="btn btn-primary open-chat-btn w-100" onclick="openChat('{{ room.receiver_user.id }}', '{{ room.room_name }}')">{{ room.receiver_user.username }}</button>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                    <a href="{% url 'accounts:profile' %}" class="btn btn-success me-2" role="button">Profile</a>
                     <a href="{% url 'accounts:logout' %}" class="btn btn-warning" role="button">Log out</a>
                 </div>
             {% endif %}
@@ -73,5 +109,214 @@
         </footer>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+
+{% include 'main/room.html' %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.bundle.min.js"></script>
+{{ room_name|json_script:"room-name" }}
+<script>
+    var chatReceiverId = null;
+    var chatSenderName = "{{ request.user.username }}";
+    var currentRoomName = null; // Add this variable to store the current room name
+    var chatSocket = null; // Add this variable to store the WebSocket connection
+    
+    function capitalizeName(name) {
+        if (!name) return '';
+        return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    }
+    
+    function openChat(receiverId) {
+        chatReceiverId = receiverId;
+        console.log("Opening chat with receiver ID:", receiverId);
+        sendDebugMessage("Opening chat with receiver ID: " + receiverId);
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'messaging:get_user' %}",
+            data: {
+                'user_id': receiverId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                console.log("Response received:", response);
+                sendDebugMessage("Response received: " + JSON.stringify(response));
+                sendDebugMessage("Room name: " + response.room_name);
+                chatSenderName = response.sender_name; // Correctly set the sender name here
+                const receiverPhotoUrl = response.receiver_photo_url;
+                const receiverName = response.receiver_name;
+                const messages = response.messages;
+    
+                // Capitalize receiver's name
+                const capitalizedReceiverName = capitalizeName(receiverName);
+    
+                // Set the current room name
+                currentRoomName = response.room_name;
+    
+                // Update chat header with receiver's photo and name
+                document.querySelector(".chat-header span").textContent = "Chat with " + capitalizedReceiverName;
+                document.querySelector(".chat-header img").src = receiverPhotoUrl;
+                document.querySelector(".chat-header img").alt = receiverName + "'s photo";
+    
+                document.getElementById("chatPopup").style.display = "block";
+    
+                // Clear chat log
+                const chatLog = document.getElementById('chat-log');
+                chatLog.innerHTML = '';
+    
+                // Append existing messages to chat log
+                messages.forEach(function(message) {
+                    const messageElement = document.createElement('div');
+                    const isSystemMessage = message.is_system;
+                    messageElement.classList.add('chat-message');
+                    if (isSystemMessage) {
+                        messageElement.classList.add('system-message');
+                    } else {
+                        messageElement.classList.add(message.sender === '{{ user.username }}' ? 'sent-message' : 'received-message');
+                    }
+                    messageElement.innerHTML = `<span>${message.sender}: </span>${message.message}`;
+                    chatLog.appendChild(messageElement);
+                });
+    
+                // Scroll to the bottom of the chat log
+                chatLog.scrollTop = chatLog.scrollHeight;
+    
+                initializeChat(response.room_name);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error creating or retrieving chat room:', status, error);
+                sendDebugMessage('Error creating or retrieving chat room: ' + status + ", " + error);
+            }
+        });
+    }
+    
+    function confirmSwap() {
+        if (!currentRoomName) {
+            console.error('No room name available for confirmation');
+            sendDebugMessage('No room name available for confirmation');
+            return;
+        }
+    
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'messaging:confirm_swap' room_name='roomNamePlaceholder' %}".replace('roomNamePlaceholder', currentRoomName),
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                console.log("Confirmation sent successfully:", response);
+                if (response.status === 'success') {
+                    if (response.is_confirmed) {
+                        alert("Both users have confirmed. Proceeding with the deposit on the profile page.");
+                        // Send a system message indicating both users have confirmed and proceed with the deposit
+                        sendSystemMessage('Both users have confirmed. We are now proceeding with the deposit on the profile page.','');
+                    } else {
+                        alert("You have confirmed the swap. Waiting for the other user to confirm.");
+                        // Automatically send a system message indicating confirmation
+                        sendSystemMessage('{{ user.username }}', 'has confirmed the swap.');
+                    }
+                } else {
+                    alert("Confirmation failed. Please try again.");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error sending confirmation:', status, error);
+            }
+        });
+    }
+    
+    function sendSystemMessage(username, message) {
+        const systemMessage = `${username} ${message}`;
+        if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+            chatSocket.send(JSON.stringify({
+                'message': systemMessage,
+                'sender_name': 'System', // Indicate that this is a system message
+                'sender': null,
+                'receiver': chatReceiverId,
+                'room': currentRoomName
+            }));
+        }
+    }
+    
+    function closeChat() {
+        if (chatSocket) {
+            chatSocket.close();
+            chatSocket = null;
+        }
+        document.getElementById("chatPopup").style.display = "none";
+    }
+    
+    function initializeChat(roomName) {
+        console.log("Initializing chat with room name:", roomName);
+    
+        if (chatSocket) {
+            chatSocket.close();
+        }
+    
+        chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/chat/'
+            + roomName
+            + '/'
+        );
+    
+        chatSocket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            const user = '{{ user.username }}';
+            const messageElement = document.createElement('div');
+    
+            if (data.sender_name === 'System') {
+                messageElement.classList.add('chat-message', 'system-message');
+            } else {
+                messageElement.classList.add('chat-message', data.sender_name === user ? 'sent-message' : 'received-message');
+            }
+    
+            messageElement.innerHTML = `<span>${data.sender_name}: </span>${data.message}`;
+            document.getElementById('chat-log').appendChild(messageElement);
+            document.getElementById('chat-log').scrollTop = document.getElementById('chat-log').scrollHeight;
+        };
+    
+        chatSocket.onclose = function (e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+    
+        // Remove any existing event listener before adding a new one
+        document.querySelector('#chat-message-submit').removeEventListener('click', sendMessage);
+        document.querySelector('#chat-message-submit').addEventListener('click', sendMessage);
+    }
+    
+    function sendMessage() {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'sender_name': '{{ user.username }}',
+                'sender': '{{ user.id }}',
+                'receiver': chatReceiverId,
+                'room': currentRoomName
+            }));
+        }
+        messageInputDom.value = '';
+    }
+    
+    function sendDebugMessage(message) {
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'messaging:debug' %}",
+            data: {
+                'message': message,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                console.log("Debug message sent successfully:", response);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error sending debug message:', status, error);
+            }
+        });
+    }
+    </script>
     </body>
 </html>

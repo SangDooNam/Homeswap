@@ -43,6 +43,7 @@
                     <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
                         Look details
                     </button>
+                    <button type="button" class="btn btn-primary open-chat-btn" onclick="openChat('{{ blog_post.user.id }}')" style="margin-left: 2px;">Open Chat</button>
                 </div>
                 <div class="collapse" id="collapse{{ forloop.counter }}">
                     <div class="card card-body mt-3">

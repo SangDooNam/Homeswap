@@ -1,0 +1,15 @@
+<div class="chat-popup" id="chatPopup">
+    <div class="chat-header">
+        <span>Chat with </span>
+        <img src="" class="img-thumbnail rounded-circle img-small me-2" alt="">
+        <button type="button" class="close-btn btn btn-sm btn-light" onclick="closeChat()">×</button>
+    </div>
+    <div class="chat-body" id="chat-log" style="background-color: whitesmoke; color: #182430; width:100%; height:200px; overflow-y:scroll">
+        <!-- Messages will be dynamically added here -->
+    </div>
+    <div class="chat-footer">
+        <input id="chat-message-input" type="text" class="form-control" placeholder="Type a message...">
+        <button id="chat-message-submit" type="button" class="btn btn-primary">Send</button>
+        <button id="confirm-swap" type="button" class="btn btn-success" onclick="confirmSwap()">Confirm Swap</button>
+    </div>
+</div>

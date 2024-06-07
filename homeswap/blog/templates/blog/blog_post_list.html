@@ -1,21 +1,17 @@
 {% extends "base.html" %}
-<div id="search-results">
+
 {% block content %}
-{% block extra_css %}
 <style>
     body {
-        background-color: #9ec1d7; /* Replace with your desired background color */
-    }
+        background-color: #9ec1d7;}
 </style>
-{% endblock %}
-<br>
-{% if page_obj %}
-<h1>Blog Post List</h1>
-<div style="text-align: right;">
-    {% include "search/search_form.html" %}
-</div>
-<br><br>
 <div class="container">
+    {% if page_obj %}
+    <h1>Blog Post List</h1>
+    <div style="text-align: right;">
+        {% include "search/search_form.html" %}
+    </div>
+    <br><br>
     {% for blog_post in page_obj %}
     <div class="col-md-12 mb-4">
         <div class="card">
@@ -29,12 +25,7 @@
                     {% if blog_post.created_date == blog_post.updated_date %}
                     <small>Created {{ blog_post.created_date }}</small>
                     {% else %}
-                    {% endif %}
-                </div>
-                <div class="d-flex justify-content-end">
-                    {% if blog_post.created_date == blog_post.updated_date %}
-                    {% else %}
-                        <small>Edited {{ blog_post.updated_date }}</small>
+                    <small>Edited {{ blog_post.updated_date }}</small>
                     {% endif %}
                 </div>
             </div>
@@ -43,6 +34,7 @@
                     <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
                         Look details
                     </button>
+                    <button type="button" class="btn btn-primary open-chat-btn" onclick="openChat('{{ blog_post.user.id }}')" style="margin-left: 2px;">Open Chat</button>
                 </div>
                 <div class="collapse" id="collapse{{ forloop.counter }}">
                     <div class="card card-body mt-3">
@@ -67,9 +59,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 mb-4"></div>
                         </div>
-
                         {% if blog_post.user.home_photos.all %}
                         <div id="carousel{{ forloop.counter }}" class="carousel slide">
                             <!-- Carousel Items -->
@@ -115,13 +105,11 @@
                     </a>
                 </li>
             {% endif %}
-    
             {% for page_num in page_obj.paginator.page_range %}
                 <li class="page-item {% if page_obj.number == page_num %}active{% endif %}">
                     <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
                 </li>
             {% endfor %}
-    
             {% if page_obj.has_next %}
                 <li class="page-item">
                     <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
@@ -131,12 +119,13 @@
             {% endif %}
         </ul>
     </nav>
+    {% else %}
+    <h1>No Blog Post found</h1>
+    <div style="text-align: right;">
+        {% include "search/search_form.html" %}
+    </div>
+    {% endif %}
 </div>
-{% else %}
-<h1>No Blog Post found</h1>
-<div style="text-align: right;">
-    {% include "search/search_form.html" %}
-</div>
-{% endif %}
 {% endblock %}
-</div>
+
+

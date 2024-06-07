@@ -1,0 +1,59 @@
+{% load account_tag %}
+<div id="confirm-deposit" style="background-color: #18465a;">
+    <br>
+    <h3 style="color: white !important;">You are about to enter into a home swap with <strong>{{ object_user }}</strong> <img src="{{ object_user.profile_photo.url }}" class="img-thumbnail rounded-circle img-small"></h3>
+    <h5 style="color: red; margin-left: 50px;">As a final step, you should charge the deposit. When both users have paid the deposit, you will receive a message in the chat.</h6>
+        <br><br>
+        <div class="container d-flex flex-column align-items-center">
+            <div class="w-100 text-start mb-3" style="padding-left: 320px;">
+                <p style="color: white;">Blog post by {{ object_user }}</p>
+            </div>
+            <div class="card mb-3" style="width: 40rem;">
+                <div class="card-header">
+                    <h4 class="card-title">{{ target_user_blog.title }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="col-md-12 mb-4">
+                        <div class="row">
+                            <p class="card-text col-sm-2 mb-4">From:</p> <strong class="col-md-4 mb-4">{{ target_user_blog.user.location }}</strong> <p class="card-text col-md-2 mb-4">To:</p> <strong class="card-text col-md-4 mb-4">{{ target_user_blog.to_city }}</strong>
+                        </div>
+                        <div class="row">
+                            <p class="card-text col-sm-2 mb-4">Departure:</p> <strong class="col-md-4 mb-4">{{ target_user_blog.start_date }}</strong>  <p class="card-text col-md-2 mb-4">End:</p> <strong class="card-text col-md-4 mb-4">{{ target_user_blog.end_date }}</strong>
+                        </div>
+                        <div class="row">
+                            <p class="card-text col-sm-3 mb-4">Number of travelers:</p> <strong class="col-md-9 mb-4">{{ target_user_blog.num_travelers }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-4">
+                        <div>
+                            <div>
+                                <p class="card-text">Description:</p>
+                            </div> 
+                            <div class="custom-description">
+                                <p class="card-text" style="color: white;">{{ target_user_blog.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <form method="post" hx-post="{% url 'support:deposit_view' room_id=is_confirmed.pk %}" hx-target="#confirm-deposit">
+        {% csrf_token %}
+        <div class="row" style="margin-top: 60px;">
+            <div class="col-md-4 mb-4">
+            </div>
+            {% for field in deposit_form %}
+                <div class="col-md-4 mb-4">
+                    <p style="color: white;">Please enter the deposit amount:</p>{{ field|add_class:'form-control' }}
+                    <br>
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="submit" class="btn btn-primary" stlye="margin-left: 500px">Submit</button>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="col-md-4 mb-4">
+            </div>
+        </div>
+    </form>
+    <br>
+</div>
